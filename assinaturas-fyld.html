@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — largura do texto limitada ao logo + linhas sem quebras feias</p>
+      <p class="tip">FYLD — colunas alinhadas (label|valor) + ISO maior</p>
     </div>
 
     <div>
@@ -59,8 +59,7 @@ const LINKS = {
 };
 const esc = s => (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
-
-function nb(s){return s.replace(/\s/g,'&nbsp;');} // non-breaking helper
+const NB = s => (s||"").replace(/\s/g,'&nbsp;'); // non-breaking spaces for phones
 
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
@@ -70,13 +69,14 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  // constants to keep alignment
-  const LOGO_W = 340;     // must match logo width below
-  const ICON_COL_W = 40;  // skinny column for the 3 icons
+  const LOGO_W = 340;     // width under which content is constrained
+  const SIDE_W = 64;      // sidebar width (ISO row + icons row)
+  const ISO_W  = 56;      // bigger ISO as requested
+  const LABEL_W = 16;     // width of the "TM / T" label column
 
   return `
   <!-- Signature (~60%) -->
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+90+ICON_COL_W+10}px;max-width:100%;font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;">
     <tr>
       <!-- PHOTO -->
       <td style="width:90px;vertical-align:top;padding:0 6px 0 0;">
@@ -85,14 +85,14 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
       <!-- RIGHT block -->
       <td style="vertical-align:top;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+ICON_COL_W}px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+SIDE_W}px;">
           <!-- Row 1: logo + ISO (tight) -->
           <tr>
             <td style="vertical-align:middle;padding:0;width:${LOGO_W}px;">
               <img src="${logo}" alt="FYLD" width="${LOGO_W}" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
-            <td style="vertical-align:middle;padding-left:6px;width:${ICON_COL_W}px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="32" style="display:block;height:auto;border:0;">
+            <td style="vertical-align:middle;padding-left:6px;width:${SIDE_W}px;white-space:nowrap;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}" style="display:block;height:auto;border:0;">
             </td>
           </tr>
 
@@ -109,31 +109,31 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contacts (kept to one line per item) -->
-                  <td style="vertical-align:top;padding-left:10px;white-space:nowrap;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;white-space:nowrap;">
+                  <!-- contacts (aligned start for every row) -->
+                  <td style="vertical-align:top;padding-left:10px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;">
                       <tr>
-                        <td style="width:14px;font-weight:700;padding-right:0;white-space:nowrap;">TM</td>
-                        <td style="white-space:nowrap;">${nb(esc(tm))}</td>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
+                        <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
                       <tr>
-                        <td></td>
-                        <td style="padding-left:12px;white-space:nowrap;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
-                        </td>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
 
                       <!-- spacer -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
                       <tr>
-                        <td></td>
-                        <td style="padding-left:12px;white-space:normal;">
-                          Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27<br>1000-007&nbsp;Lisboa
-                        </td>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;">Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27</td>
                       </tr>
                       <tr>
-                        <td style="width:14px;font-weight:700;padding-right:0;white-space:nowrap;">T</td>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;">1000-007&nbsp;Lisboa</td>
+                      </tr>
+                      <tr>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">T</td>
                         <td style="white-space:nowrap;">(+351)&nbsp;934&nbsp;556&nbsp;060</td>
                       </tr>
                     </table>
@@ -143,8 +143,8 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             </td>
 
             <!-- icons column -->
-            <td style="vertical-align:top;padding-top:4px;width:${ICON_COL_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${ICON_COL_W}px;">
+            <td style="vertical-align:top;padding-top:4px;width:${SIDE_W}px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;">
                 <tr><td style="padding:0 0 4px 0;">
                   <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Website"></a>
                 </td></tr>
