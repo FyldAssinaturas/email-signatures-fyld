@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Assinaturas FYLD — Builder</title>
 <style>
-  :root{
-    --fyld-black:#000;
-  }
+  :root{ --fyld-black:#000; }
   html,body{margin:0;padding:0;background:#f6f6f6;color:#000;font-family:Mogno, Arial, Helvetica, sans-serif;}
   .wrap{max-width:1100px;margin:24px auto;padding:20px;}
   .card{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;}
-  .grid{display:grid;grid-template-columns:340px 1fr;gap:18px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
   @media (max-width:900px){ .grid{grid-template-columns:1fr} }
   h1{font-size:20px;margin:0 0 12px}
   label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
@@ -24,185 +22,170 @@
     background:#000;color:#fff
   }
   button.secondary{background:#111;opacity:.85}
-  small.muted{color:#666}
-  /* —— assinatura container (para copiar) —— */
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto}
-  /* Email-safe styles: dentro da assinatura usamos TABLE + inline styles (gerados já no HTML).  */
   .tip{font-size:12px;color:#666;margin-top:8px}
 </style>
 </head>
 <body>
-
 <div class="wrap">
   <h1>Assinaturas FYLD — Builder</h1>
 
   <div class="grid card">
     <div>
       <label>Nome</label>
-      <input id="nome" type="text" placeholder="Ex.: Filipa Freire" value="Filipa Freire" />
+      <input id="nome" type="text" value="Filipa Freire" />
       <label>Cargo</label>
-      <input id="cargo" type="text" placeholder="Ex.: Graphic Designer" value="Graphic Designer" />
+      <input id="cargo" type="text" value="Graphic Designer" />
       <label>TM (telemóvel, com indicativo)</label>
-      <input id="tm" type="tel" placeholder="Ex.: (+351) 934 556 060" value="(+351) 934 556 060" />
+      <input id="tm" type="tel" value="(+351) 934 556 060" />
+      <label>Imagem (ficheiro no repo ou URL)</label>
+      <input id="foto" type="text" value="headshot-filipa-freire.png" placeholder="ex.: headshot-joao-silva.png ou https://..." />
 
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
       <p class="tip">
-        Dica: “Abrir só a assinatura” gera um <b>link único</b> que podes enviar ao colaborador. Ao abrir, mostra apenas a assinatura pronta a copiar.
+        Se escreveres apenas o nome do ficheiro (ex.: <code>headshot-ana.png</code>), busco em <code>main/</code> do repositório. Também aceita URL completo.
       </p>
-
       <p class="tip">
-        Fontes: a maioria dos clientes de e-mail não carrega webfonts. Usamos <b>Mogno</b> como preferência com fallback para Arial/Helvetica. Se quiseres, adiciono @font-face para Apple Mail/Gmail iOS depois de subires os ficheiros WOFF2.
+        A fonte preferida é <b>Mogno</b>, com fallback Arial/Helvetica (clientes de e-mail raramente carregam webfonts).
       </p>
     </div>
 
     <div>
-      <div class="sig-outer">
-        <!-- Pré-visualização renderiza aqui -->
-        <div id="signaturePreview"></div>
-      </div>
-      <small class="muted">A assinatura é fluída e não parte no mobile. Todas as imagens mantêm a proporção (sem deformar).</small>
+      <div class="sig-outer"><div id="signaturePreview"></div></div>
+      <p class="tip">Assinatura fluída (não “parte” no mobile). Todas as imagens mantêm proporção (sem deformar).</p>
     </div>
   </div>
 
-  <p class="tip" style="margin:16px 0">
-    Imagens esperadas no repositório: <code>fyld-logo.png</code>, <code>certificacao-iso.png</code>, <code>icon-instagram.png</code>, <code>icon-linkedin.png</code>, <code>icon-website.png</code>.
-  </p>
+  <p class="tip">Imagens esperadas: <code>fyld-logo.png</code> (já com “Code for big solutions” + linha), <code>certificacao-iso.png</code>, <code>icon-instagram.png</code>, <code>icon-linkedin.png</code>, <code>icon-website.png</code>, e a foto de cada colaborador.</p>
 </div>
 
 <script>
-/* === CONFIGURAÇÃO DO REPO (ajusta se precisares) ======================= */
-const ORG  = "FyldAssinaturas";              // <- muda se for outro
-const REPO = "email-signatures-fyld";        // <- muda se for outro
-const RAW  = `https://raw.githubusercontent.com/${ORG}/${REPO}/main/`; // caminho absoluto
-/* ======================================================================= */
+/* ===== CONFIG DO REPO ===== */
+const ORG  = "FyldAssinaturas";
+const REPO = "email-signatures-fyld";
+const RAW  = `https://raw.githubusercontent.com/${ORG}/${REPO}/main/`;
 
-/* LINKS dos ícones (fixos) */
+/* links fixos */
 const LINKS = {
   instagram: "https://www.instagram.com/mainfyld/",
   linkedin:  "https://www.linkedin.com/company/fyld/",
   website:   "https://www.fyld.pt/"
 };
 
-/* util: escapa HTML básico */
-function esc(s){ return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+/* util */
+function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function resolveImgPath(v){
+  if(!v) return "";
+  if(/^https?:\/\//i.test(v)) return v.trim();
+  return RAW + v.trim(); // ficheiro no repo
+}
 
-/* === HTML DA ASSINATURA (TABLE-BASED, INLINE STYLES) ==================== */
-function buildSignatureHTML({nome, cargo, tm}){
-  const logo = RAW + "fyld-logo.png";
+/* === HTML DA ASSINATURA ================================================= */
+function buildSignatureHTML({nome, cargo, tm, foto}){
+  const logo = RAW + "fyld-logo.png";             // já contém tagline + linha
   const iso  = RAW + "certificacao-iso.png";
-  const iconWeb  = RAW + "icon-website.png";
-  const iconIn   = RAW + "icon-linkedin.png";
-  const iconIg   = RAW + "icon-instagram.png";
+  const iconWeb = RAW + "icon-website.png";
+  const iconIn  = RAW + "icon-linkedin.png";
+  const iconIg  = RAW + "icon-instagram.png";
+  const head = resolveImgPath(foto);
 
-  // largura máxima: 700px; usa tabelas para compatibilidade com Outlook
   return `
   <!-- FYLD Email Signature -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:700px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:760px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+    <!-- topo: logo (com tagline/linha) + ISO -->
     <tr>
-      <td style="padding:0 0 8px 0;">
-        <!-- tagline + logo -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <tr>
-            <td style="vertical-align:middle;padding:6px 0;">
-              <span style="display:block;font-size:16px;line-height:20px;font-weight:600;">Code for<br/>big solutions</span>
-              <div style="height:8px;"></div>
-              <div style="background:#000;height:8px;width:100%;max-width:860px;"></div>
-            </td>
-            <td style="width:220px;text-align:right;vertical-align:middle;">
-              <img src="${logo}" width="220" style="display:inline-block;max-width:220px;height:auto;border:0;outline:0;text-decoration:none;" alt="FYLD" />
-            </td>
-            <td style="width:86px;text-align:left;vertical-align:middle;padding-left:12px;">
-              <img src="${iso}" width="86" style="display:inline-block;max-width:86px;height:auto;border:0;outline:0;text-decoration:none;" alt="ISO/IEC 27001 Certified" />
-            </td>
-          </tr>
-        </table>
+      <td style="padding:6px 0;vertical-align:middle;">
+        <img src="${logo}" alt="FYLD" width="560" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+      </td>
+      <td style="width:120px;text-align:right;vertical-align:middle;padding-left:12px;">
+        <img src="${iso}" alt="ISO/IEC 27001 Certified" width="110" style="display:inline-block;max-width:110px;height:auto;border:0;outline:0;text-decoration:none;">
       </td>
     </tr>
 
-    <tr>
-      <!-- bloco central: nome + dados -->
-      <td>
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <tr>
-            <td style="vertical-align:top;padding:14px 0 0 0;">
-              <div style="font-size:44px;line-height:48px;font-weight:800;">${esc(nome)}</div>
-              <div style="font-size:22px;line-height:26px;margin-top:6px;">${esc(cargo)}</div>
-            </td>
+    <!-- conteúdo -->
+    <tr><td colspan="2" style="padding-top:10px">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+        <tr>
+          <!-- foto (opcional) -->
+          ${head ? `
+          <td style="width:160px;vertical-align:top;padding-right:18px;">
+            <img src="${head}" alt="${esc(nome)}" width="120" style="display:block;width:120px;height:auto;border:0;border-radius:999px;outline:0;text-decoration:none;">
+          </td>` : ``}
 
-            <td style="width:380px;vertical-align:top;padding:8px 0 0 20px">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;font-size:18px;line-height:24px;">
-                <tr>
-                  <td style="white-space:nowrap;font-weight:700;">TM</td>
-                  <td style="padding-left:10px;">${esc(tm)}</td>
-                </tr>
-                <tr>
-                  <td style="white-space:nowrap;font-weight:700;"></td>
-                  <td style="padding-left:10px;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;">fyld.pt</a></td>
-                </tr>
-                <tr>
-                  <td colspan="2" style="height:8px;"></td>
-                </tr>
-                <tr>
-                  <td colspan="2" style="font-size:16px;line-height:22px;">
-                    Rua Actor Taborda, 27<br/>
-                    1000-007 Lisboa
-                  </td>
-                </tr>
-                <tr>
-                  <td style="white-space:nowrap;font-weight:700;">T</td>
-                  <td style="padding-left:10px;">(+351) 934 556 060</td>
-                </tr>
-              </table>
-            </td>
+          <!-- nome + dados -->
+          <td style="vertical-align:top;">
+            <div style="font-size:44px;line-height:48px;font-weight:800;">${esc(nome)}</div>
+            <div style="font-size:22px;line-height:26px;margin-top:6px;">${esc(cargo)}</div>
+          </td>
 
-            <td style="width:86px;vertical-align:top;padding-left:18px">
-              <!-- ícones verticais -->
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr><td style="padding:6px 0;">
-                  <a href="${LINKS.website}">
-                    <img src="${iconWeb}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="Website" />
-                  </a>
-                </td></tr>
-                <tr><td style="padding:6px 0;">
-                  <a href="${LINKS.linkedin}">
-                    <img src="${iconIn}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="LinkedIn" />
-                  </a>
-                </td></tr>
-                <tr><td style="padding:6px 0;">
-                  <a href="${LINKS.instagram}">
-                    <img src="${iconIg}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="Instagram" />
-                  </a>
-                </td></tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+          <!-- dados + ícones -->
+          <td style="width:400px;vertical-align:top;padding-left:22px">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;font-size:18px;line-height:24px;">
+              <tr>
+                <td style="white-space:nowrap;font-weight:700;">TM</td>
+                <td style="padding-left:10px;">${esc(tm)}</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;font-weight:700;"></td>
+                <td style="padding-left:10px;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;">fyld.pt</a></td>
+              </tr>
+              <tr><td colspan="2" style="height:8px"></td></tr>
+              <tr><td colspan="2" style="font-size:16px;line-height:22px;">
+                Rua Actor Taborda, 27<br/>1000-007 Lisboa
+              </td></tr>
+              <tr>
+                <td style="white-space:nowrap;font-weight:700;">T</td>
+                <td style="padding-left:10px;">(+351) 934 556 060</td>
+              </tr>
+            </table>
+          </td>
+
+          <td style="width:90px;vertical-align:top;padding-left:16px">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+              <tr><td style="padding:6px 0;">
+                <a href="${LINKS.website}">
+                  <img src="${iconWeb}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="Website">
+                </a>
+              </td></tr>
+              <tr><td style="padding:6px 0;">
+                <a href="${LINKS.linkedin}">
+                  <img src="${iconIn}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
+                </a>
+              </td></tr>
+              <tr><td style="padding:6px 0;">
+                <a href="${LINKS.instagram}">
+                  <img src="${iconIg}" width="48" height="48" style="display:block;width:48px;height:48px;border:0;outline:0;text-decoration:none;" alt="Instagram">
+                </a>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
   </table>
   <!-- /FYLD Email Signature -->
   `;
 }
 
-/* === RENDER DA PRÉ-VISUALIZAÇÃO ======================================== */
+/* === PREVIEW === */
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
+const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
-
 function render(){
-  const html = buildSignatureHTML({nome:$nome.value, cargo:$cargo.value, tm:$tm.value});
+  const html = buildSignatureHTML({nome:$nome.value,cargo:$cargo.value,tm:$tm.value,foto:$foto.value});
   $prev.innerHTML = html;
 }
-[$nome,$cargo,$tm].forEach(i => i.addEventListener('input', render));
+[$nome,$cargo,$tm,$foto].forEach(i=>i.addEventListener('input',render));
 render();
 
-/* === COPIAR COMO HTML PARA A CLIPBOARD ================================= */
+/* === COPIAR === */
 document.getElementById('copyBtn').addEventListener('click', async () => {
-  const html = buildSignatureHTML({nome:$nome.value, cargo:$cargo.value, tm:$tm.value});
+  const html = buildSignatureHTML({nome:$nome.value,cargo:$cargo.value,tm:$tm.value,foto:$foto.value});
   try{
     if (navigator.clipboard && window.ClipboardItem) {
       const data = new ClipboardItem({
@@ -211,60 +194,47 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
       });
       await navigator.clipboard.write([data]);
     } else {
-      // fallback simples
-      const ta = document.createElement('textarea');
-      ta.value = html;
-      document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy');
-      ta.remove();
+      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
     }
-    alert('Assinatura copiada! Agora é só colar no teu cliente de e-mail.');
-  }catch(e){
-    alert('Não consegui copiar automaticamente. Seleciona e copia manualmente a pré-visualização.');
-  }
+    alert('Assinatura copiada! ✨');
+  }catch(e){ alert('Se não copiar automaticamente, seleciona a assinatura e copia manualmente.'); }
 });
 
-/* === ABRIR SÓ A ASSINATURA (URL PARTILHÁVEL) =========================== */
-/* gera um link para o MESMO ficheiro com ?view=signature&nome=...&cargo=...&tm=...  */
+/* === ABRIR SÓ ASSINATURA (link partilhável) === */
 document.getElementById('openBtn').addEventListener('click', () => {
   const params = new URLSearchParams({
-    view: 'signature',
-    nome: $nome.value,
-    cargo: $cargo.value,
-    tm: $tm.value
+    view:'signature',
+    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
   });
   const url = `${location.origin}${location.pathname}?${params.toString()}`;
-  window.open(url, "_blank"); // abre em nova aba com URL real (não about:blank)
+  window.open(url, "_blank");
 });
 
-/* === MODO “SÓ ASSINATURA” ============================================== */
-(function bootSignatureOnly(){
+/* === Modo assinatura-only === */
+(function(){
   const qs = new URLSearchParams(location.search);
-  if(qs.get('view') === 'signature'){
-    // limpa a página e mostra só a assinatura
-    document.body.innerHTML = '';
-    document.body.style.background = '#fff';
-    const nome = qs.get('nome') || '';
-    const cargo= qs.get('cargo')|| '';
-    const tm   = qs.get('tm')   || '';
-    const html = buildSignatureHTML({nome, cargo, tm});
-    const host = document.createElement('div');
-    host.innerHTML = html;
-    document.body.appendChild(host);
+  if(qs.get('view')==='signature'){
+    document.body.innerHTML='';
+    document.body.style.background='#fff';
+    const html = buildSignatureHTML({
+      nome: qs.get('nome')||'',
+      cargo: qs.get('cargo')||'',
+      tm: qs.get('tm')||'',
+      foto: qs.get('foto')||''
+    });
+    const host=document.createElement('div'); host.innerHTML=html; document.body.appendChild(host);
 
-    // botão rápido para copiar quando alguém abre este link
-    const btn = document.createElement('button');
-    btn.textContent = 'Copiar assinatura';
+    const btn=document.createElement('button');
+    btn.textContent='Copiar assinatura';
     btn.style.position='fixed'; btn.style.right='16px'; btn.style.bottom='16px';
     btn.style.background='#000'; btn.style.color='#fff'; btn.style.border='0';
     btn.style.padding='12px 14px'; btn.style.borderRadius='12px'; btn.style.fontWeight='600';
-    btn.addEventListener('click', async ()=> {
-      const h = buildSignatureHTML({nome, cargo, tm});
+    btn.addEventListener('click', async ()=>{
       try{
-        const data = new ClipboardItem({"text/html": new Blob([h], {type:"text/html"})});
+        const data = new ClipboardItem({"text/html": new Blob([html],{type:"text/html"})});
         await navigator.clipboard.write([data]);
-        btn.textContent = 'Copiada ✓';
-        setTimeout(()=>btn.textContent='Copiar assinatura', 1500);
+        btn.textContent='Copiada ✓'; setTimeout(()=>btn.textContent='Copiar assinatura',1200);
       }catch(e){ alert('Se não copiar automaticamente, seleciona e copia manualmente.'); }
     });
     document.body.appendChild(btn);
@@ -273,3 +243,4 @@ document.getElementById('openBtn').addEventListener('click', () => {
 </script>
 </body>
 </html>
+
