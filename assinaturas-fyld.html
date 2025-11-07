@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v110 — same-cell logo+ISO, tight icons, spacer row</p>
+      <p class="tip">FYLD tight — sidebar junto ao conteúdo (gap ~6px)</p>
     </div>
 
     <div>
@@ -69,138 +69,30 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const head = resolveImgPath(foto);
 
   return `
-  <!-- FYLD Email Signature (60%) -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:540px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <!-- FYLD Email Signature (~60% scale, tight sidebar) -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:560px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
       <!-- PHOTO -->
-      <td style="width:90px;vertical-align:top;padding:0 2px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="78" style="display:block;width:78px;height:auto;border-radius:999px;border:0;">` : ``}
+      <td style="width:100px;vertical-align:top;padding:0 4px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="82" style="display:block;width:82px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
 
-      <!-- RIGHT SIDE -->
+      <!-- RIGHT BLOCK: 2-column grid (main | sidebar) -->
       <td style="vertical-align:top;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <!-- HEADER: logo + ISO in the SAME cell (inner table) -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+          <!-- Row 1: Logo in main, ISO in sidebar so they are adjacent -->
           <tr>
-            <td colspan="3" style="padding:0;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-                <tr>
-                  <td style="padding:0;vertical-align:middle;">
-                    <img src="${logo}" alt="FYLD" width="330" style="display:block;max-width:100%;height:auto;border:0;">
-                  </td>
-                  <td style="white-space:nowrap;vertical-align:middle;padding:0 0 0 6px;">
-                    <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
-                  </td>
-                </tr>
-              </table>
+            <!-- MAIN (logo) -->
+            <td style="vertical-align:middle;padding:0;">
+              <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
+            </td>
+            <!-- SIDEBAR (ISO) -->
+            <td style="width:68px;vertical-align:middle;padding-left:6px;white-space:nowrap;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
             </td>
           </tr>
 
-          <!-- BODY: keep a consistent 3-column grid -->
+          <!-- Row 2: Content + icons (sidebar sits immediately next to contacts) -->
           <tr>
-            <td style="vertical-align:top;padding-top:3px;">
-              <div style="font-size:21px;line-height:25px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-              <div style="font-size:10.5px;line-height:14px;margin-top:2px;">${esc(cargo)}</div>
-            </td>
-
-            <!-- CONTACTS -->
-            <td style="vertical-align:top;padding-left:0;padding-top:3px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:9.8px;line-height:13px;">
-                <tr>
-                  <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
-                  <td>${esc(tm)}</td>
-                </tr>
-                <tr>
-                  <td colspan="2" style="padding:0;padding-left:10px;">
-                    <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
-                  </td>
-                </tr>
-                <!-- spacer row -->
-                <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
-                <tr>
-                  <td colspan="2" style="padding:0;padding-left:10px;font-size:8.8px;line-height:12px;">
-                    Rua Actor Taborda, 27<br/>1000-007 Lisboa
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
-                  <td>(+351) 934 556 060</td>
-                </tr>
-              </table>
-            </td>
-
-            <!-- ICONS (tight) -->
-            <td style="width:35px;vertical-align:top;padding-left:4px;padding-top:3px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr><td style="padding:0;"><a href="${LINKS.website}">
-                  <img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Website"></a>
-                </td></tr>
-                <tr><td style="padding:0;"><a href="${LINKS.linkedin}">
-                  <img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="LinkedIn"></a>
-                </td></tr>
-                <tr><td style="padding:0;"><a href="${LINKS.instagram}">
-                  <img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Instagram"></a>
-                </td></tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-  `;
-}
-
-const $nome = document.getElementById('nome');
-const $cargo= document.getElementById('cargo');
-const $tm   = document.getElementById('tm');
-const $foto = document.getElementById('foto');
-const $prev = document.getElementById('signaturePreview');
-function render(){
-  const html = buildSignatureHTML({nome:$nome.value,cargo:$cargo.value,tm:$tm.value,foto:$foto.value});
-  $prev.innerHTML = html;
-}
-[$nome,$cargo,$tm,$foto].forEach(i=>i.addEventListener('input',render));
-render();
-
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  const html = buildSignatureHTML({nome:$nome.value,cargo:$cargo.value,tm:$tm.value,foto:$foto.value});
-  try{
-    if (navigator.clipboard && window.ClipboardItem) {
-      const data = new ClipboardItem({
-        "text/html": new Blob([html], { type: "text/html" }),
-        "text/plain": new Blob([html.replace(/<[^>]+>/g,'' )], { type: "text/plain" })
-      });
-      await navigator.clipboard.write([data]);
-    } else {
-      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy'); ta.remove();
-    }
-    alert('Assinatura copiada! ✨');
-  }catch(e){ alert('Se não copiar automaticamente, seleciona a assinatura e copia manualmente.'); }
-});
-
-document.getElementById('openBtn').addEventListener('click', () => {
-  const params = new URLSearchParams({
-    view:'signature',
-    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
-  });
-  const url = `${location.origin}${location.pathname}?${params.toString()}`;
-  window.open(url, "_blank");
-});
-
-(function(){
-  const qs = new URLSearchParams(location.search);
-  if(qs.get('view')==='signature'){
-    document.body.innerHTML='';
-    document.body.style.background='#fff';
-    const html = buildSignatureHTML({
-      nome: qs.get('nome')||'', cargo: qs.get('cargo')||'',
-      tm: qs.get('tm')||'', foto: qs.get('foto')||''
-    });
-    const host=document.createElement('div'); host.innerHTML=html; document.body.appendChild(host);
-  }
-})();
-</script>
-</body>
-</html>
+            <!-- MAIN (name + contacts) -->
+            <td style="vertical-align:top
