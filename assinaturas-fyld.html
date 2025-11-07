@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — TM volta à direita do nome; ISO+ícones colados</p>
+      <p class="tip">FYLD — 3 colunas internas (Nome | Contactos | Ícones) + ISO junto ao logo</p>
     </div>
 
     <div>
@@ -68,9 +68,8 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  /* 60% scale. One row with three cells:
-     [PHOTO] | [MAIN (logo + name/contacts two-column)] | [SIDEBAR (ISO + icons)] */
   return `
+  <!-- Outer signature table (~60%) -->
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:540px;max-width:100%;font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;">
     <tr>
       <!-- PHOTO -->
@@ -78,75 +77,70 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="82" style="display:block;width:82px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
 
-      <!-- MAIN -->
+      <!-- RIGHT BLOCK (single cell, inner table controls layout) -->
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
-          <!-- Logo -->
+
+          <!-- Row 1: LOGO + ISO (two cells, tight) -->
           <tr>
             <td style="vertical-align:middle;padding:0;">
               <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
+            <td style="width:64px;vertical-align:middle;padding-left:6px;white-space:nowrap;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;height:auto;border:0;">
+            </td>
           </tr>
 
-          <!-- Name (left) + Contacts (right) in the SAME row -->
+          <!-- Row 2: Name | Contacts | Icons (three cells, no outer sidebar) -->
           <tr>
+            <!-- NAME/TITLE -->
             <td style="vertical-align:top;padding-top:4px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
-                <tr>
-                  <!-- LEFT: name + title -->
-                  <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;">${esc(cargo)}</div>
-                  </td>
+              <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+              <div style="font-size:11px;line-height:15px;margin-top:2px;">${esc(cargo)}</div>
+            </td>
 
-                  <!-- RIGHT: contacts (starts aligned with TM) -->
-                  <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;">
-                      <tr>
-                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
-                        <td>${esc(tm)}</td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="padding:0;padding-left:12px;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
-                        </td>
-                      </tr>
-                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
-                      <tr>
-                        <td colspan="2" style="padding:0;padding-left:12px;font-size:9px;line-height:13px;">
-                          Rua Actor Taborda, 27<br>1000-007 Lisboa
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
-                        <td>(+351) 934 556 060</td>
-                      </tr>
-                    </table>
+            <!-- CONTACTS -->
+            <td style="vertical-align:top;padding-top:4px;padding-left:10px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;">
+                <tr>
+                  <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                  <td>${esc(tm)}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding:0;padding-left:12px;">
+                    <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                   </td>
+                </tr>
+                <!-- spacer -->
+                <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+                <tr>
+                  <td colspan="2" style="padding:0;padding-left:12px;font-size:9px;line-height:13px;">
+                    Rua Actor Taborda, 27<br>1000-007 Lisboa
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                  <td>(+351) 934 556 060</td>
                 </tr>
               </table>
             </td>
-          </tr>
-        </table>
-      </td>
 
-      <!-- SIDEBAR (ISO + icons) — narrow, glued to main -->
-      <td style="width:60px;vertical-align:top;padding-left:2px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td style="padding:0 0 6px 0;vertical-align:top;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="58" style="display:block;width:58px;height:auto;border:0;">
+            <!-- ICONS (IMMEDIATELY next to contacts) -->
+            <td style="width:40px;vertical-align:top;padding-top:4px;padding-left:4px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr><td style="padding:0 0 4px 0;">
+                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Website"></a>
+                </td></tr>
+                <tr><td style="padding:0 0 4px 0;">
+                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="LinkedIn"></a>
+                </td></tr>
+                <tr><td style="padding:0;">
+                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Instagram"></a>
+                </td></tr>
+              </table>
             </td>
           </tr>
-          <tr><td style="padding:0 0 6px 0;">
-            <a href="${LINKS.website}"><img src="${iconWeb}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;" alt="Website"></a>
-          </td></tr>
-          <tr><td style="padding:0 0 6px 0;">
-            <a href="${LINKS.linkedin}"><img src="${iconIn}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;" alt="LinkedIn"></a>
-          </td></tr>
-          <tr><td style="padding:0;">
-            <a href="${LINKS.instagram}"><img src="${iconIg}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;" alt="Instagram"></a>
-          </td></tr>
+
         </table>
       </td>
     </tr>
@@ -165,7 +159,6 @@ function render(){
   });
   $prev.innerHTML = html;
 }
-
 [$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
