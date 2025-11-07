@@ -58,13 +58,12 @@ const LINKS = {
   website:   "https://www.fyld.pt/"
 };
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function resolveImgPath(v){ if(!v) return ""; return /^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()); }
+function resolveImgPath(v){ return !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim())); }
 
-/* spacing constants for label/value alignment */
-const LABEL_W = 16;      // px
-const LABEL_PAD_R = 3;   // px
+/* hard alignment: all values start on the same x */
+const LABEL_W = 14;      // narrow label (also affects "T")
+const LABEL_PAD_R = 2;   // tiny gap between label and value
 
-/* ===== Assinatura 70% ===== */
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
@@ -77,12 +76,12 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- FOTO: top-aligned, smaller, tighter gap -->
-      <td style="width:150px;vertical-align:top;padding:0 12px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="110" style="display:block;width:110px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- PHOTO: top-aligned, smaller, tighter right padding -->
+      <td style="width:140px;vertical-align:top;padding:0 8px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="104" style="display:block;width:104px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
-      <!-- COL DIREITA -->
+      <!-- RIGHT COLUMN -->
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
           <!-- LOGO + ISO -->
@@ -95,18 +94,18 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             </td>
           </tr>
 
-          <!-- NOME / CONTACTOS -->
+          <!-- NAME / CONTACTS -->
           <tr>
             <td colspan="2" style="padding-top:5px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
-                  <!-- nome + cargo -->
+                  <!-- name + title -->
                   <td style="vertical-align:top;">
                     <div style="font-size:26px;line-height:30px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contactos (all values aligned) -->
+                  <!-- contacts: all values aligned to the same left edge -->
                   <td style="vertical-align:top;padding-left:12px;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
@@ -114,6 +113,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
                       <tr>
+                        <!-- spacer equals label + pad so value starts in same column -->
                         <td style="width:${LABEL_W + LABEL_PAD_R}px;"></td>
                         <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
@@ -124,13 +124,14 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:2px;">T</td>
+                        <!-- minimal gap between T and number -->
+                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:1px;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
-                  <!-- ícones -->
+                  <!-- icons -->
                   <td style="width:60px;vertical-align:top;padding-left:10px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding:2px 0;">
@@ -217,7 +218,7 @@ document.getElementById('openBtn').addEventListener('click', () => {
     btn.textContent='Copiar assinatura';
     btn.style.position='fixed'; btn.style.right='16px'; btn.style.bottom='16px';
     btn.style.background='#000'; btn.style.color='#fff'; btn.style.border='0';
-    btn.style.padding = '12px 14px';  /* ✅ fixed line */
+    btn.style.padding = '12px 14px';
     btn.style.borderRadius='12px';
     btn.style.fontWeight='600';
     btn.addEventListener('click', async ()=>{
