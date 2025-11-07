@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v70 — merged cells for fyld.pt + morada</p>
+      <p class="tip">FYLD v80 — reduced to 60 %, tighter ISO + icons spacing</p>
     </div>
 
     <div>
@@ -69,79 +69,71 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const head = resolveImgPath(foto);
 
   return `
-  <!-- FYLD Email Signature (70%) -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <!-- FYLD Email Signature (60%) -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:560px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- FOTO: top-aligned, smaller, tight gap -->
-      <td style="width:120px;vertical-align:top;padding:0 4px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="96" style="display:block;width:96px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- PHOTO -->
+      <td style="width:100px;vertical-align:top;padding:0 2px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="80" style="display:block;width:80px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
 
-      <!-- COL DIREITA -->
+      <!-- RIGHT SIDE -->
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <!-- LOGO + ISO -->
           <tr>
-            <td style="vertical-align:middle;padding:2px 0;">
-              <img src="${logo}" alt="FYLD" width="420" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+            <td style="vertical-align:middle;padding:0;">
+              <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
-            <td style="width:110px;text-align:right;vertical-align:middle;padding-left:8px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="81" style="display:inline-block;max-width:81px;height:auto;border:0;outline:0;text-decoration:none;">
+            <td style="width:90px;text-align:right;vertical-align:middle;padding-left:4px;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="68" style="display:inline-block;max-width:68px;height:auto;border:0;">
             </td>
           </tr>
 
-          <!-- NOME + CONTACTOS -->
           <tr>
-            <td colspan="2" style="padding-top:5px">
+            <td colspan="2" style="padding-top:4px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
-                  <!-- nome + cargo -->
+                  <!-- Name & Title -->
                   <td style="vertical-align:top;">
-                    <div style="font-size:26px;line-height:30px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
+                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+                    <div style="font-size:11px;line-height:15px;margin-top:2px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- CONTACTOS -->
+                  <!-- CONTACTS -->
                   <td style="vertical-align:top;padding-left:0;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:10px;line-height:14px;">
                       <tr>
-                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
-                        <td style="word-break:break-word;">${esc(tm)}</td>
+                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                        <td>${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:14px;">
+                        <td colspan="2" style="padding:0;padding-left:12px;">
                           <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:14px;font-size:10.5px;line-height:14px;">
+                        <td colspan="2" style="padding:0;padding-left:12px;font-size:9px;line-height:13px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
-                  <!-- ÍCONES -->
-                  <td style="width:60px;vertical-align:top;padding-left:10px">
+                  <!-- ICONS -->
+                  <td style="width:45px;vertical-align:top;padding-left:6px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.website}">
-                          <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Website">
-                        </a>
+                      <tr><td style="padding:1px 0;">
+                        <a href="${LINKS.website}"><img src="${iconWeb}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.linkedin}">
-                          <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="LinkedIn">
-                        </a>
+                      <tr><td style="padding:1px 0;">
+                        <a href="${LINKS.linkedin}"><img src="${iconIn}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.instagram}">
-                          <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Instagram">
-                        </a>
+                      <tr><td style="padding:1px 0;">
+                        <a href="${LINKS.instagram}"><img src="${iconIg}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
                     </table>
                   </td>
@@ -204,22 +196,6 @@ document.getElementById('openBtn').addEventListener('click', () => {
       tm: qs.get('tm')||'', foto: qs.get('foto')||''
     });
     const host=document.createElement('div'); host.innerHTML=html; document.body.appendChild(host);
-
-    const btn=document.createElement('button');
-    btn.textContent='Copiar assinatura';
-    btn.style.position='fixed'; btn.style.right='16px'; btn.style.bottom='16px';
-    btn.style.background='#000'; btn.style.color='#fff'; btn.style.border='0';
-    btn.style.padding = '12px 14px';
-    btn.style.borderRadius='12px';
-    btn.style.fontWeight='600';
-    btn.addEventListener('click', async ()=>{
-      try{
-        const data = new ClipboardItem({"text/html": new Blob([html],{type:"text/html"})});
-        await navigator.clipboard.write([data]);
-        btn.textContent='Copiada ✓'; setTimeout(()=>btn.textContent='Copiar assinatura',1200);
-      }catch(e){ alert('Se não copiar automaticamente, seleciona e copia manualmente.'); }
-    });
-    document.body.appendChild(btn);
   }
 })();
 </script>
