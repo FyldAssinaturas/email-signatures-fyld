@@ -12,13 +12,12 @@
   @media (max-width:900px){ .grid{grid-template-columns:1fr} }
   h1{font-size:20px;margin:0 0 12px}
   label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
-  input[type="text"],input[type="tel"]{
-    width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px;
-  }
+  input[type="text"],input[type="tel"]{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px;}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto}
+  .tip{font-size:12px;color:#666;margin-top:8px}
 </style>
 </head>
 <body>
@@ -40,6 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
+      <p class="tip">Assinatura v70-ALIGN-03 (força alinhamentos e gap da foto).</p>
     </div>
 
     <div>
@@ -60,10 +60,10 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ return !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim())); }
 
-/* hard alignment: all contact values share the same left edge */
-const LABEL_W = 14;      // width of label column (TM/T)
-const LABEL_PAD_R = 2;   // gap between label and value
-const VALUE_OFFSET = LABEL_W + LABEL_PAD_R;
+/* alignment constants */
+const LABEL_W = 14;            // label column (TM/T)
+const LABEL_PAD_R = 2;         // space between label and value
+const VALUE_OFFSET = LABEL_W + LABEL_PAD_R;  // left offset for all values
 
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
@@ -77,15 +77,13 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- PHOTO: smaller; very tight right padding -->
-      <td style="width:130px;vertical-align:top;padding:0 4px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="100" style="display:block;width:100px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- PHOTO: smaller + tighter gap -->
+      <td style="width:128px;vertical-align:top;padding:0 2px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="98" style="display:block;width:98px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
-      <!-- RIGHT COLUMN -->
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <!-- LOGO + ISO -->
           <tr>
             <td style="vertical-align:middle;padding:2px 0;">
               <img src="${logo}" alt="FYLD" width="420" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
@@ -95,18 +93,17 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             </td>
           </tr>
 
-          <!-- NAME + CONTACTS (contacts aligned to the red guide) -->
+          <!-- NAME + CONTACTS -->
           <tr>
             <td colspan="2" style="padding-top:5px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
-                  <!-- name + title -->
                   <td style="vertical-align:top;">
                     <div style="font-size:26px;line-height:30px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contacts: ZERO left padding so values sit on the guide; spacers = VALUE_OFFSET -->
+                  <!-- CONTACTS: start exactly on the guide (no left padding) -->
                   <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
@@ -130,23 +127,16 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     </table>
                   </td>
 
-                  <!-- icons -->
                   <td style="width:60px;vertical-align:top;padding-left:10px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.website}">
-                          <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Website">
-                        </a>
+                      <tr><td style="padding:2px 0;"><a href="${LINKS.website}">
+                        <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Website"></a>
                       </td></tr>
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.linkedin}">
-                          <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
-                        </a>
+                      <tr><td style="padding:2px 0;"><a href="${LINKS.linkedin}">
+                        <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="LinkedIn"></a>
                       </td></tr>
-                      <tr><td style="padding:2px 0;">
-                        <a href="${LINKS.instagram}">
-                          <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Instagram">
-                        </a>
+                      <tr><td style="padding:2px 0;"><a href="${LINKS.instagram}">
+                        <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Instagram"></a>
                       </td></tr>
                     </table>
                   </td>
@@ -188,7 +178,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
       ta.select(); document.execCommand('copy'); ta.remove();
     }
     alert('Assinatura copiada! ✨');
-  }catch(e){ alert('Se não copiar automaticamente, seleciona e copia manualmente.'); }
+  }catch(e){ alert('Se não copiar automaticamente, seleciona a assinatura e copia manualmente.'); }
 });
 
 document.getElementById('openBtn').addEventListener('click', () => {
@@ -234,11 +224,3 @@ document.getElementById('openBtn').addEventListener('click', () => {
 
 <script>
 if (typeof render === "function") {
-  try { render(); } catch(e) {}
-  document.addEventListener("DOMContentLoaded", () => { try { render(); } catch(e) {} });
-  window.addEventListener("load", () => { try { render(); } catch(e) {} });
-}
-</script>
-</body>
-</html>
-
