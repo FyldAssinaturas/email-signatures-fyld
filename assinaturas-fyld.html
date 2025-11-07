@@ -41,12 +41,11 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">Se escreveres apenas o nome do ficheiro, busco em <code>main/</code>. Também aceita URL completo.</p>
     </div>
 
     <div>
       <div class="sig-outer"><div id="signaturePreview"></div></div>
-      <p class="tip">Assinatura fluída e sem deformações no mobile.</p>
+      <p class="tip">Versão reduzida (70 %) — ideal para clientes de e-mail.</p>
     </div>
   </div>
 </div>
@@ -72,12 +71,12 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const head = resolveImgPath(foto);
 
   return `
-  <!-- FYLD Email Signature -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:920px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <!-- FYLD Email Signature (70%) -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- FOTO centrada -->
-      <td style="width:200px;vertical-align:middle;padding:0 20px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="180" style="display:block;width:180px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- FOTO -->
+      <td style="width:150px;vertical-align:middle;padding:0 18px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="126" style="display:block;width:126px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
       <!-- COL DIREITA -->
@@ -86,62 +85,62 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
           <!-- LOGO + ISO -->
           <tr>
             <td style="vertical-align:middle;padding:2px 0;">
-              <img src="${logo}" alt="FYLD" width="600" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+              <img src="${logo}" alt="FYLD" width="420" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
-            <td style="width:140px;text-align:right;vertical-align:middle;padding-left:10px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="115" style="display:inline-block;max-width:115px;height:auto;border:0;outline:0;text-decoration:none;">
+            <td style="width:110px;text-align:right;vertical-align:middle;padding-left:8px;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="81" style="display:inline-block;max-width:81px;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
           </tr>
 
           <!-- NOME / CONTACTOS -->
           <tr>
-            <td colspan="2" style="padding-top:6px">
+            <td colspan="2" style="padding-top:5px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
                   <!-- nome + cargo -->
                   <td style="vertical-align:top;">
-                    <div style="font-size:38px;line-height:42px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:18px;line-height:22px;margin-top:4px;">${esc(cargo)}</div>
+                    <div style="font-size:26px;line-height:30px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+                    <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
                   <!-- contactos -->
-                  <td style="vertical-align:top;padding-left:20px;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:16px;line-height:22px;">
+                  <td style="vertical-align:top;padding-left:16px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;">TM</td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:5px;">TM</td>
                         <td>${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;"></td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:5px;"></td>
                         <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
-                      <tr><td colspan="2" style="height:4px;"></td></tr>
-                      <tr><td colspan="2" style="font-size:14px;line-height:20px;">
+                      <tr><td colspan="2" style="height:3px;"></td></tr>
+                      <tr><td colspan="2" style="font-size:10.5px;line-height:14px;">
                         Rua Actor Taborda, 27<br/>1000-007 Lisboa
                       </td></tr>
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;">T</td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:5px;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
                   <!-- ícones -->
-                  <td style="width:72px;vertical-align:top;padding-left:14px">
+                  <td style="width:60px;vertical-align:top;padding-left:12px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:3px 0;">
+                      <tr><td style="padding:2px 0;">
                         <a href="${LINKS.website}">
-                          <img src="${iconWeb}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="Website">
+                          <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Website">
                         </a>
                       </td></tr>
-                      <tr><td style="padding:3px 0;">
+                      <tr><td style="padding:2px 0;">
                         <a href="${LINKS.linkedin}">
-                          <img src="${iconIn}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
+                          <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
                         </a>
                       </td></tr>
-                      <tr><td style="padding:3px 0;">
+                      <tr><td style="padding:2px 0;">
                         <a href="${LINKS.instagram}">
-                          <img src="${iconIg}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="Instagram">
+                          <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Instagram">
                         </a>
                       </td></tr>
                     </table>
@@ -235,4 +234,5 @@ if (typeof render === "function") {
 </script>
 </body>
 </html>
+
 
