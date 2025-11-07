@@ -16,8 +16,9 @@
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
-  .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto}
+  .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto;min-height:140px}
   .tip{font-size:12px;color:#666;margin-top:8px}
+  .error{background:#fff3f3;border:1px solid #e99;border-radius:10px;padding:10px;color:#900;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono","Courier New", monospace}
 </style>
 </head>
 <body>
@@ -39,7 +40,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — versão final alinhada, ISO maior, espaçamento ajustado</p>
+      <p class="tip">FYLD — versão final (ISO maior, colunas alinhadas, ícones juntos, +12px sob o logo)</p>
     </div>
 
     <div>
@@ -57,7 +58,9 @@ const LINKS = {
   linkedin:  "https://www.linkedin.com/company/fyld/",
   website:   "https://www.fyld.pt/"
 };
-const esc = s => (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+// helpers
+const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
@@ -69,25 +72,30 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  const LOGO_W = 340;
-  const SIDE_W = 64;
-  const ISO_W  = 56;
-  const LABEL_W = 16;
+  // layout constants
+  const LOGO_W  = 340; // cap content width under logo
+  const SIDE_W  = 64;  // sidebar column (ISO + icons)
+  const ISO_W   = 56;  // bigger ISO
+  const LABEL_W = 16;  // width for "TM" / "T" label col
 
+  // inner signature table (email-safe)
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
          style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
     <tr>
+      <!-- PHOTO -->
       <td style="width:90px;vertical-align:top;padding:0 6px 0 0;">
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="82"
-        style="display:block;width:82px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
+             style="display:block;width:82px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
       </td>
 
+      <!-- RIGHT block -->
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
+          <!-- Row 1: logo + ISO -->
           <tr>
             <td style="vertical-align:middle;padding:0;width:${LOGO_W}px;">
               <img src="${logo}" alt="FYLD" width="${LOGO_W}"
@@ -99,15 +107,19 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             </td>
           </tr>
 
+          <!-- Row 2: name/title + contacts | icons -->
           <tr>
+            <!-- content under logo: add 12px breathing room -->
             <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;border-collapse:collapse;">
                 <tr>
+                  <!-- Name + Title -->
                   <td style="vertical-align:top;">
                     <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;max-width:${Math.floor(LOGO_W*0.55)}px;overflow:hidden;text-overflow:ellipsis;">${esc(nome)}</div>
                     <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
                   </td>
 
+                  <!-- Contacts, aligned start for all rows -->
                   <td style="vertical-align:top;padding-left:10px;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
                       <tr>
@@ -139,16 +151,17 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
               </table>
             </td>
 
+            <!-- Icons column -->
             <td style="vertical-align:top;padding-top:4px;width:${SIDE_W}px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;border-collapse:collapse;">
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
+                  <a href="${LINKS.website}"><img src="${RAW}icon-website.png" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
                 </td></tr>
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
+                  <a href="${LINKS.linkedin}"><img src="${RAW}icon-linkedin.png" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
                 </td></tr>
                 <tr><td style="padding:0;">
-                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
+                  <a href="${LINKS.instagram}"><img src="${RAW}icon-instagram.png" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
                 </td></tr>
               </table>
             </td>
@@ -158,7 +171,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
     </tr>
   </table>`;
 
-  // Wrapper to eliminate Gmail / Outlook extra spacing
+  // outer wrapper removes extra white space some clients add
   return `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
          style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;margin:0;padding:0;">
@@ -170,6 +183,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   </table>`;
 }
 
+// DOM refs
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
@@ -177,9 +191,59 @@ const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
 
 function render(){
-  const html = buildSignatureHTML({
+  try{
+    const html = buildSignatureHTML({
+      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    });
+    $prev.innerHTML = html;
+  }catch(err){
+    $prev.innerHTML = `<div class="error"><strong>Erro a renderizar assinatura:</strong><br>${esc(String(err))}</div>`;
+    console.error(err);
+  }
+}
+
+// live update & initial render
+[$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
+render();
+
+// copy & open
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  try{
+    const html = buildSignatureHTML({
+      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    });
+    if (navigator.clipboard && window.ClipboardItem){
+      const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
+      await navigator.clipboard.write([data]);
+      alert('Assinatura copiada! ✨');
+    }else{
+      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
+      alert('Assinatura copiada! ✨');
+    }
+  }catch(err){
+    alert('Não foi possível copiar automaticamente. Podes copiar manualmente a partir da pré-visualização.');
+    console.error(err);
+  }
+});
+
+document.getElementById('openBtn').addEventListener('click', () => {
+  const qs = new URLSearchParams({
+    view:'signature',
     nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
   });
-  $prev.innerHTML = html;
+  window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
+});
+
+// signature-only mode
+if (new URLSearchParams(location.search).get('view')==='signature'){
+  const p = new URLSearchParams(location.search);
+  const html = buildSignatureHTML({
+    nome:p.get('nome')||'', cargo:p.get('cargo')||'',
+    tm:p.get('tm')||'', foto:p.get('foto')||''
+  });
+  document.body.innerHTML = html;
 }
-[$nome,$cargo,$tm,$foto].for
+</script>
+</body>
+</html>
