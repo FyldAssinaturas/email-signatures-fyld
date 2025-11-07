@@ -69,7 +69,7 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ if(!v) return ""; return /^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()); }
 
-/* === HTML DA ASSINATURA — contactos na coluna direita, alinhados com nome === */
+/* === HTML DA ASSINATURA — foto centrada, espaçamentos reduzidos ======== */
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";             // já com tagline + linha
   const iso  = RAW + "certificacao-iso.png";
@@ -81,80 +81,79 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   return `
   <!-- FYLD Email Signature -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:980px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
-    <!-- TOP: logo + ISO -->
     <tr>
-      <!-- foto à esquerda ocupa sua célula, mas topo é o logo -->
-      <td style="width:220px;vertical-align:top;padding:0 22px 0 0;">
+      <!-- FOTO: célula única, centrada verticalmente -->
+      <td style="width:220px;vertical-align:middle;padding:0 22px 0 0;">
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="200" style="display:block;width:200px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
-      <td style="vertical-align:middle;">
+
+      <!-- COL DIREITA: (logo+ISO) + (nome/contacts/icons) com gaps curtos -->
+      <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+          <!-- LOGO + ISO -->
           <tr>
-            <td style="vertical-align:middle;padding:6px 0;">
+            <td style="vertical-align:middle;padding:4px 0;">
               <img src="${logo}" alt="FYLD" width="640" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
-            <td style="width:160px;text-align:right;vertical-align:middle;padding-left:16px;">
+            <td style="width:160px;text-align:right;vertical-align:middle;padding-left:14px;">
               <img src="${iso}" alt="ISO/IEC 27001 Certified" width="130" style="display:inline-block;max-width:130px;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
           </tr>
-        </table>
-      </td>
-    </tr>
 
-    <!-- ROW: nome + cargo (esquerda)  |  contactos (direita)  |  ícones -->
-    <tr>
-      <!-- coluna da foto (vazia nesta linha, só para manter grelha) -->
-      <td style="width:220px;"></td>
-
-      <!-- nome + cargo -->
-      <td style="vertical-align:top;padding-top:12px;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+          <!-- (TIGHT) NOME + CONTACTOS + ÍCONES -->
           <tr>
-            <td style="vertical-align:top;">
-              <div style="font-size:52px;line-height:56px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-              <div style="font-size:24px;line-height:28px;margin-top:8px;">${esc(cargo)}</div>
-            </td>
+            <td colspan="2" style="padding-top:8px">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                  <!-- nome + cargo -->
+                  <td style="vertical-align:top;">
+                    <div style="font-size:52px;line-height:56px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+                    <div style="font-size:24px;line-height:28px;margin-top:6px;">${esc(cargo)}</div>
+                  </td>
 
-            <!-- contactos, alinhados à mesma altura do nome -->
-            <td style="vertical-align:top;padding-left:24px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:20px;line-height:26px;">
-                <tr>
-                  <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">TM</td>
-                  <td style="padding-left:0">${esc(tm)}</td>
-                </tr>
-                <tr>
-                  <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;"></td>
-                  <td style="padding-left:0"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
-                </tr>
-                <tr><td colspan="2" style="height:8px;"></td></tr>
-                <tr><td colspan="2" style="font-size:18px;line-height:24px;padding-left:0">
-                  Rua Actor Taborda, 27<br/>1000-007 Lisboa
-                </td></tr>
-                <tr>
-                  <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">T</td>
-                  <td style="padding-left:0">(+351) 934 556 060</td>
-                </tr>
-              </table>
-            </td>
+                  <!-- contactos (encostados, sem espaço à esquerda) -->
+                  <td style="vertical-align:top;padding-left:24px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:20px;line-height:26px;">
+                      <tr>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">TM</td>
+                        <td style="padding-left:0">${esc(tm)}</td>
+                      </tr>
+                      <tr>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;"></td>
+                        <td style="padding-left:0"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
+                      </tr>
+                      <tr><td colspan="2" style="height:6px;"></td></tr>
+                      <tr><td colspan="2" style="font-size:18px;line-height:24px;padding-left:0">
+                        Rua Actor Taborda, 27<br/>1000-007 Lisboa
+                      </td></tr>
+                      <tr>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">T</td>
+                        <td style="padding-left:0">(+351) 934 556 060</td>
+                      </tr>
+                    </table>
+                  </td>
 
-            <!-- ícones verticais à extrema direita -->
-            <td style="width:84px;vertical-align:top;padding-left:18px">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr><td style="padding:4px 0;">
-                  <a href="${LINKS.website}">
-                    <img src="${iconWeb}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Website">
-                  </a>
-                </td></tr>
-                <tr><td style="padding:4px 0;">
-                  <a href="${LINKS.linkedin}">
-                    <img src="${iconIn}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
-                  </a>
-                </td></tr>
-                <tr><td style="padding:4px 0;">
-                  <a href="${LINKS.instagram}">
-                    <img src="${iconIg}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Instagram">
-                  </a>
-                </td></tr>
+                  <!-- ícones -->
+                  <td style="width:84px;vertical-align:top;padding-left:18px">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                      <tr><td style="padding:4px 0;">
+                        <a href="${LINKS.website}">
+                          <img src="${iconWeb}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Website">
+                        </a>
+                      </td></tr>
+                      <tr><td style="padding:4px 0;">
+                        <a href="${LINKS.linkedin}">
+                          <img src="${iconIn}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
+                        </a>
+                      </td></tr>
+                      <tr><td style="padding:4px 0;">
+                        <a href="${LINKS.instagram}">
+                          <img src="${iconIg}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Instagram">
+                        </a>
+                      </td></tr>
+                    </table>
+                  </td>
+                </tr>
               </table>
             </td>
           </tr>
@@ -248,7 +247,3 @@ if (typeof render === "function") {
 </script>
 </body>
 </html>
-
-</html>
-
-
