@@ -42,9 +42,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">
-        Se escreveres apenas o nome do ficheiro (ex.: <code>headshot-ana.png</code>), busco em <code>main/</code> do repositório. Também aceita URL completo.
-      </p>
+      <p class="tip">Se escreveres apenas o nome do ficheiro, busco em <code>main/</code>. Também aceita URL completo.</p>
     </div>
 
     <div>
@@ -71,7 +69,7 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ if(!v) return ""; return /^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()); }
 
-/* === HTML DA ASSINATURA (layout ajustado) ============================== */
+/* === HTML DA ASSINATURA (nome/cargo por baixo do logo) ================= */
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";             // já com tagline + linha
   const iso  = RAW + "certificacao-iso.png";
@@ -82,40 +80,36 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
   return `
   <!-- FYLD Email Signature -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:900px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:980px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- COL ESQUERDA: foto + nome/título -->
-      <td style="vertical-align:top;padding:0 20px 0 0;">
+      <!-- ESQUERDA: foto -->
+      <td style="vertical-align:top;padding:0 22px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="200" style="display:block;width:200px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      </td>
+
+      <!-- DIREITA: logo (topo) + nome/cargo (mesma coluna) + contactos + ícones -->
+      <td style="vertical-align:top;">
+        <!-- topo: logo à esquerda, ISO à direita -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
           <tr>
-            <td style="vertical-align:top;padding:10px 0 12px 0">
-              ${head ? `<img src="${head}" alt="${esc(nome)}" width="180" style="display:block;width:180px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+            <td style="vertical-align:middle;padding:6px 0;">
+              <img src="${logo}" alt="FYLD" width="640" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+            </td>
+            <td style="width:160px;text-align:right;vertical-align:middle;padding-left:16px;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="130" style="display:inline-block;max-width:130px;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
           </tr>
+
+          <!-- nome + cargo (LOGO EM CIMA, NOME MESMA COLUNA) -->
           <tr>
-            <td style="vertical-align:top;">
+            <td colspan="2" style="padding-top:12px">
               <div style="font-size:52px;line-height:56px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
               <div style="font-size:24px;line-height:28px;margin-top:8px;">${esc(cargo)}</div>
             </td>
           </tr>
         </table>
-      </td>
 
-      <!-- COL DIREITA: logo (topo), contactos e ícones -->
-      <td style="vertical-align:top;">
-        <!-- linha topo: logo à esquerda, ISO à direita -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
-          <tr>
-            <td style="vertical-align:middle;padding:6px 0;">
-              <img src="${logo}" alt="FYLD" width="580" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
-            </td>
-            <td style="width:140px;text-align:right;vertical-align:middle;padding-left:16px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="120" style="display:inline-block;max-width:120px;height:auto;border:0;outline:0;text-decoration:none;">
-            </td>
-          </tr>
-        </table>
-
-        <!-- linha info + ícones -->
+        <!-- contactos à esquerda + ícones à direita -->
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin-top:14px;">
           <tr>
             <td style="vertical-align:top;">
@@ -139,7 +133,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
               </table>
             </td>
 
-            <!-- ícones verticais à direita, menores -->
+            <!-- ícones verticais -->
             <td style="width:84px;vertical-align:top;padding-left:18px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr><td style="padding:4px 0;">
@@ -250,4 +244,5 @@ if (typeof render === "function") {
 </script>
 </body>
 </html>
+
 
