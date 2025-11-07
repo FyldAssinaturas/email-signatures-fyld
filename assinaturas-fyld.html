@@ -60,9 +60,10 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ return !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim())); }
 
-/* hard alignment: all values start on the same x */
-const LABEL_W = 14;      // narrow label (also affects "T")
-const LABEL_PAD_R = 2;   // tiny gap between label and value
+/* hard alignment: all contact values share the same left edge */
+const LABEL_W = 14;      // width of label column (TM/T)
+const LABEL_PAD_R = 2;   // gap between label and value
+const VALUE_OFFSET = LABEL_W + LABEL_PAD_R;
 
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
@@ -76,9 +77,9 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- PHOTO: top-aligned, smaller, tighter right padding -->
-      <td style="width:140px;vertical-align:top;padding:0 8px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="104" style="display:block;width:104px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- PHOTO: smaller; very tight right padding -->
+      <td style="width:130px;vertical-align:top;padding:0 4px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="100" style="display:block;width:100px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
       <!-- RIGHT COLUMN -->
@@ -94,7 +95,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             </td>
           </tr>
 
-          <!-- NAME / CONTACTS -->
+          <!-- NAME + CONTACTS (contacts aligned to the red guide) -->
           <tr>
             <td colspan="2" style="padding-top:5px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
@@ -105,26 +106,24 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contacts: all values aligned to the same left edge -->
-                  <td style="vertical-align:top;padding-left:12px;">
+                  <!-- contacts: ZERO left padding so values sit on the guide; spacers = VALUE_OFFSET -->
+                  <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
                         <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:${LABEL_PAD_R}px;">TM</td>
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <!-- spacer equals label + pad so value starts in same column -->
-                        <td style="width:${LABEL_W + LABEL_PAD_R}px;"></td>
+                        <td style="width:${VALUE_OFFSET}px;"></td>
                         <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W + LABEL_PAD_R}px;"></td>
+                        <td style="width:${VALUE_OFFSET}px;"></td>
                         <td style="font-size:10.5px;line-height:14px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
                       <tr>
-                        <!-- minimal gap between T and number -->
                         <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:1px;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
@@ -189,7 +188,7 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
       ta.select(); document.execCommand('copy'); ta.remove();
     }
     alert('Assinatura copiada! ✨');
-  }catch(e){ alert('Se não copiar automaticamente, seleciona a assinatura e copia manualmente.'); }
+  }catch(e){ alert('Se não copiar automaticamente, seleciona e copia manualmente.'); }
 });
 
 document.getElementById('openBtn').addEventListener('click', () => {
