@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — layout estável, sidebar justa (gap ~6px)</p>
+      <p class="tip">FYLD — ISO centered with icons (gap ~6px)</p>
     </div>
 
     <div>
@@ -68,7 +68,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  // 60% overall scale; ISO + icons in a tight sidebar immediately next to contacts
   return `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:560px;max-width:100%;font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;">
     <tr>
@@ -78,17 +77,18 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
-          <!-- row: logo (main) + ISO (sidebar) stuck together -->
+          <!-- row: logo (main) + ISO (sidebar) -->
           <tr>
             <td style="vertical-align:middle;padding:0;">
               <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
-            <td style="width:68px;vertical-align:middle;padding-left:6px;white-space:nowrap;">
+            <!-- ISO centered with icons -->
+            <td style="width:68px;vertical-align:top;padding:10px 0 0 6px;white-space:nowrap;">
               <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
             </td>
           </tr>
 
-          <!-- row: name+contacts (main) + icons (sidebar) immediately adjacent -->
+          <!-- row: name+contacts (main) + icons (sidebar) -->
           <tr>
             <td style="vertical-align:top;padding-top:4px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
@@ -159,10 +159,8 @@ function render(){
   $prev.innerHTML = html;
 }
 
-// live updates
 [$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
 
-// copy & open
 document.getElementById('copyBtn').addEventListener('click', async () => {
   const html = buildSignatureHTML({
     nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
@@ -188,10 +186,8 @@ document.getElementById('openBtn').addEventListener('click', () => {
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
 
-// render immediately
 render();
 
-// signature-only mode
 if (new URLSearchParams(location.search).get('view')==='signature'){
   const html = buildSignatureHTML({
     nome:new URLSearchParams(location.search).get('nome')||'',
