@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v70 — contacts aligned to value column</p>
+      <p class="tip">FYLD v70 — merged cells for fyld.pt + morada</p>
     </div>
 
     <div>
@@ -68,15 +68,12 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImgPath(foto);
 
-  const LABEL_W = 14;             // width of the label column (TM/T)
-  const PAD_TO_VALUE = LABEL_W;   // left padding to start at value column
-
   return `
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
       <!-- FOTO: top-aligned, smaller, tight gap -->
-      <td style="width:120px;vertical-align:top;padding:0 2px 0 0;">
+      <td style="width:120px;vertical-align:top;padding:0 4px 0 0;">
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="96" style="display:block;width:96px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
@@ -104,53 +101,46 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contacts block -->
+                  <!-- CONTACTOS -->
                   <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
-                      <!-- TM (label | value) -->
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
-
-                      <!-- fyld.pt aligned to the VALUE column -->
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:${PAD_TO_VALUE}px;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;display:inline-block;">fyld.pt</a>
+                        <td colspan="2" style="padding:0;padding-left:14px;">
+                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                         </td>
                       </tr>
-
-                      <!-- address aligned to the VALUE column -->
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:${PAD_TO_VALUE}px;font-size:10.5px;line-height:14px;">
+                        <td colspan="2" style="padding:0;padding-left:14px;font-size:10.5px;line-height:14px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
-
-                      <!-- T (label | value) -->
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
-                  <!-- ícones -->
+                  <!-- ÍCONES -->
                   <td style="width:60px;vertical-align:top;padding-left:10px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding:2px 0;">
                         <a href="${LINKS.website}">
-                          <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Website">
+                          <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Website">
                         </a>
                       </td></tr>
                       <tr><td style="padding:2px 0;">
                         <a href="${LINKS.linkedin}">
-                          <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
+                          <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="LinkedIn">
                         </a>
                       </td></tr>
                       <tr><td style="padding:2px 0;">
                         <a href="${LINKS.instagram}">
-                          <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Instagram">
+                          <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Instagram">
                         </a>
                       </td></tr>
                     </table>
@@ -163,7 +153,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
       </td>
     </tr>
   </table>
-  <!-- /FYLD Email Signature -->
   `;
 }
 
@@ -233,14 +222,6 @@ document.getElementById('openBtn').addEventListener('click', () => {
     document.body.appendChild(btn);
   }
 })();
-</script>
-
-<script>
-if (typeof render === "function") {
-  try { render(); } catch(e) {}
-  document.addEventListener("DOMContentLoaded", () => { try { render(); } catch(e) {} });
-  window.addEventListener("load", () => { try { render(); } catch(e) {} });
-}
 </script>
 </body>
 </html>
