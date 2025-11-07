@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v80 — reduced to 60 %, tighter ISO + icons spacing</p>
+      <p class="tip">FYLD v90 — 60 % scale, tighter right spacing + extra contact row</p>
     </div>
 
     <div>
@@ -84,7 +84,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
             <td style="vertical-align:middle;padding:0;">
               <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
-            <td style="width:90px;text-align:right;vertical-align:middle;padding-left:4px;">
+            <td style="width:70px;text-align:right;vertical-align:middle;padding-left:0;">
               <img src="${iso}" alt="ISO/IEC 27001 Certified" width="68" style="display:inline-block;max-width:68px;height:auto;border:0;">
             </td>
           </tr>
@@ -111,6 +111,10 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                           <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                         </td>
                       </tr>
+
+                      <!-- spacer row -->
+                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+
                       <tr>
                         <td colspan="2" style="padding:0;padding-left:12px;font-size:9px;line-height:13px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
@@ -124,15 +128,15 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                   </td>
 
                   <!-- ICONS -->
-                  <td style="width:45px;vertical-align:top;padding-left:6px">
+                  <td style="width:45px;vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:1px 0;">
+                      <tr><td style="padding:0;">
                         <a href="${LINKS.website}"><img src="${iconWeb}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
-                      <tr><td style="padding:1px 0;">
+                      <tr><td style="padding:0;">
                         <a href="${LINKS.linkedin}"><img src="${iconIn}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
-                      <tr><td style="padding:1px 0;">
+                      <tr><td style="padding:0;">
                         <a href="${LINKS.instagram}"><img src="${iconIg}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
                       </td></tr>
                     </table>
