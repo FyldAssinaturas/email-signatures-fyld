@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v70 — merged cells for fyld.pt + morada</p>
+      <p class="tip">FYLD v70 — contacts aligned to value column</p>
     </div>
 
     <div>
@@ -67,6 +67,9 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIn  = RAW + "icon-linkedin.png";
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImgPath(foto);
+
+  const LABEL_W = 14;             // width of the label column (TM/T)
+  const PAD_TO_VALUE = LABEL_W;   // left padding to start at value column
 
   return `
   <!-- FYLD Email Signature (70%) -->
@@ -101,32 +104,32 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contactos -->
+                  <!-- contacts block -->
                   <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <!-- TM (label | value) -->
                       <tr>
-                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
 
-                      <!-- fyld.pt spans both columns to start where the label would be -->
+                      <!-- fyld.pt aligned to the VALUE column -->
                       <tr>
-                        <td colspan="2" style="padding:0;">
+                        <td colspan="2" style="padding:0;padding-left:${PAD_TO_VALUE}px;">
                           <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;display:inline-block;">fyld.pt</a>
                         </td>
                       </tr>
 
-                      <!-- address spans both columns as well -->
+                      <!-- address aligned to the VALUE column -->
                       <tr>
-                        <td colspan="2" style="padding:0;font-size:10.5px;line-height:14px;">
+                        <td colspan="2" style="padding:0;padding-left:${PAD_TO_VALUE}px;font-size:10.5px;line-height:14px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
 
-                      <!-- T (label | value) with no gap before the number -->
+                      <!-- T (label | value) -->
                       <tr>
-                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
@@ -206,7 +209,7 @@ document.getElementById('openBtn').addEventListener('click', () => {
   const qs = new URLSearchParams(location.search);
   if(qs.get('view')==='signature'){
     document.body.innerHTML='';
-    document.body.style.background:'#fff';
+    document.body.style.background='#fff';
     const html = buildSignatureHTML({
       nome: qs.get('nome')||'', cargo: qs.get('cargo')||'',
       tm: qs.get('tm')||'', foto: qs.get('foto')||''
