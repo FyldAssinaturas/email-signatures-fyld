@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v90 — 60 % scale, tighter right spacing + extra contact row</p>
+      <p class="tip">FYLD v100 — ISO + icons moved closer 🎯</p>
     </div>
 
     <div>
@@ -70,11 +70,11 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
   return `
   <!-- FYLD Email Signature (60%) -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:560px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:540px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
       <!-- PHOTO -->
-      <td style="width:100px;vertical-align:top;padding:0 2px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="80" style="display:block;width:80px;height:auto;border-radius:999px;border:0;">` : ``}
+      <td style="width:90px;vertical-align:top;padding:0 2px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="78" style="display:block;width:78px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
 
       <!-- RIGHT SIDE -->
@@ -82,32 +82,32 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
           <tr>
             <td style="vertical-align:middle;padding:0;">
-              <img src="${logo}" alt="FYLD" width="340" style="display:block;max-width:100%;height:auto;border:0;">
+              <img src="${logo}" alt="FYLD" width="330" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
-            <td style="width:70px;text-align:right;vertical-align:middle;padding-left:0;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="68" style="display:inline-block;max-width:68px;height:auto;border:0;">
+            <td style="width:60px;text-align:right;vertical-align:middle;padding-left:0;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
             </td>
           </tr>
 
           <tr>
-            <td colspan="2" style="padding-top:4px;">
+            <td colspan="2" style="padding-top:3px;">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
                   <!-- Name & Title -->
                   <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;">${esc(cargo)}</div>
+                    <div style="font-size:21px;line-height:25px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+                    <div style="font-size:10.5px;line-height:14px;margin-top:2px;">${esc(cargo)}</div>
                   </td>
 
                   <!-- CONTACTS -->
                   <td style="vertical-align:top;padding-left:0;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:10px;line-height:14px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:9.8px;line-height:13px;">
                       <tr>
-                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                        <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
                         <td>${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:12px;">
+                        <td colspan="2" style="padding:0;padding-left:10px;">
                           <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                         </td>
                       </tr>
@@ -116,28 +116,28 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
                       <tr>
-                        <td colspan="2" style="padding:0;padding-left:12px;font-size:9px;line-height:13px;">
+                        <td colspan="2" style="padding:0;padding-left:10px;font-size:8.8px;line-height:12px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:12px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                        <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
                   <!-- ICONS -->
-                  <td style="width:45px;vertical-align:top;padding-left:0;">
+                  <td style="width:35px;vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding:0;">
-                        <a href="${LINKS.website}"><img src="${iconWeb}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
+                        <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
                       </td></tr>
                       <tr><td style="padding:0;">
-                        <a href="${LINKS.linkedin}"><img src="${iconIn}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
+                        <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
                       </td></tr>
                       <tr><td style="padding:0;">
-                        <a href="${LINKS.instagram}"><img src="${iconIg}" width="24" height="24" style="display:block;width:24px;height:24px;border:0;"></a>
+                        <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
                       </td></tr>
                     </table>
                   </td>
