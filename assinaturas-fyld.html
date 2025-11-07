@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — colunas alinhadas (label|valor) + ISO maior</p>
+      <p class="tip">FYLD — versão final alinhada, ISO maior, espaçamento ajustado</p>
     </div>
 
     <div>
@@ -59,7 +59,7 @@ const LINKS = {
 };
 const esc = s => (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
-const NB = s => (s||"").replace(/\s/g,'&nbsp;'); // non-breaking spaces for phones
+const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
@@ -69,49 +69,47 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  const LOGO_W = 340;     // width under which content is constrained
-  const SIDE_W = 64;      // sidebar width (ISO row + icons row)
-  const ISO_W  = 56;      // bigger ISO as requested
-  const LABEL_W = 16;     // width of the "TM / T" label column
+  const LOGO_W = 340;
+  const SIDE_W = 64;
+  const ISO_W  = 56;
+  const LABEL_W = 16;
 
-  return `
-  <!-- Signature (~60%) -->
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;">
+  const inner = `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;
+                font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
+                font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
     <tr>
-      <!-- PHOTO -->
       <td style="width:90px;vertical-align:top;padding:0 6px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="82" style="display:block;width:82px;height:auto;border-radius:999px;border:0;">` : ``}
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="82"
+        style="display:block;width:82px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
       </td>
 
-      <!-- RIGHT block -->
       <td style="vertical-align:top;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W+SIDE_W}px;">
-          <!-- Row 1: logo + ISO (tight) -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+               style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
           <tr>
             <td style="vertical-align:middle;padding:0;width:${LOGO_W}px;">
-              <img src="${logo}" alt="FYLD" width="${LOGO_W}" style="display:block;max-width:100%;height:auto;border:0;">
+              <img src="${logo}" alt="FYLD" width="${LOGO_W}"
+                   style="display:block;max-width:100%;height:auto;border:0;margin:0;">
             </td>
             <td style="vertical-align:middle;padding-left:6px;width:${SIDE_W}px;white-space:nowrap;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}" style="display:block;height:auto;border:0;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}"
+                   style="display:block;height:auto;border:0;margin:0;">
             </td>
           </tr>
 
-          <!-- Row 2: left = content (fixed to logo width), right = icons -->
           <tr>
-            <!-- LEFT content fits exactly under the logo width -->
-            <td style="vertical-align:top;padding-top:4px;width:${LOGO_W}px;">
-              <!-- Two columns INSIDE (name/title | contacts) sharing the same fixed width -->
+            <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;">
                 <tr>
-                  <!-- name/title -->
                   <td style="vertical-align:top;">
                     <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;max-width:${Math.floor(LOGO_W*0.55)}px;overflow:hidden;text-overflow:ellipsis;">${esc(nome)}</div>
                     <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contacts (aligned start for every row) -->
                   <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
                       <tr>
                         <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
@@ -121,7 +119,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
 
-                      <!-- spacer -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
                       <tr>
@@ -142,22 +139,32 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
               </table>
             </td>
 
-            <!-- icons column -->
             <td style="vertical-align:top;padding-top:4px;width:${SIDE_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;border-collapse:collapse;">
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Website"></a>
+                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
                 </td></tr>
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="LinkedIn"></a>
+                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
                 </td></tr>
                 <tr><td style="padding:0;">
-                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Instagram"></a>
+                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
                 </td></tr>
               </table>
             </td>
           </tr>
         </table>
+      </td>
+    </tr>
+  </table>`;
+
+  // Wrapper to eliminate Gmail / Outlook extra spacing
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;margin:0;padding:0;">
+    <tr>
+      <td style="margin:0;padding:0;line-height:0;font-size:0;">
+        ${inner}
       </td>
     </tr>
   </table>`;
@@ -175,43 +182,4 @@ function render(){
   });
   $prev.innerHTML = html;
 }
-[$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
-
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  const html = buildSignatureHTML({
-    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
-  });
-  try{
-    if (navigator.clipboard && window.ClipboardItem){
-      const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
-      await navigator.clipboard.write([data]);
-      alert('Assinatura copiada! ✨');
-    }else{
-      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy'); ta.remove();
-      alert('Assinatura copiada! ✨');
-    }
-  }catch{ alert('Se não copiar, seleciona e copia manualmente.'); }
-});
-
-document.getElementById('openBtn').addEventListener('click', () => {
-  const qs = new URLSearchParams({
-    view:'signature',
-    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
-  });
-  window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
-});
-
-render();
-
-if (new URLSearchParams(location.search).get('view')==='signature'){
-  const p = new URLSearchParams(location.search);
-  const html = buildSignatureHTML({
-    nome:p.get('nome')||'', cargo:p.get('cargo')||'',
-    tm:p.get('tm')||'', foto:p.get('foto')||''
-  });
-  document.body.innerHTML = html;
-}
-</script>
-</body>
-</html>
+[$nome,$cargo,$tm,$foto].for
