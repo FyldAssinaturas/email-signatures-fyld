@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Assinaturas FYLD — Builder</title>
 <style>
-  :root{ --fyld-black:#000; }
   html,body{margin:0;padding:0;background:#f6f6f6;color:#000;font-family:Mogno, Arial, Helvetica, sans-serif;}
   .wrap{max-width:1100px;margin:24px auto;padding:20px;}
   .card{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px;}
@@ -53,25 +52,19 @@
 </div>
 
 <script>
-/* ===== CONFIG DO REPO ===== */
 const ORG  = "FyldAssinaturas";
 const REPO = "email-signatures-fyld";
 const RAW  = `https://raw.githubusercontent.com/${ORG}/${REPO}/main/`;
-
-/* links fixos */
 const LINKS = {
   instagram: "https://www.instagram.com/mainfyld/",
   linkedin:  "https://www.linkedin.com/company/fyld/",
   website:   "https://www.fyld.pt/"
 };
-
-/* utils */
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ if(!v) return ""; return /^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()); }
 
-/* === HTML DA ASSINATURA — foto centrada, espaçamentos reduzidos ======== */
 function buildSignatureHTML({nome, cargo, tm, foto}){
-  const logo = RAW + "fyld-logo.png";             // já com tagline + linha
+  const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
   const iconIn  = RAW + "icon-linkedin.png";
@@ -80,75 +73,75 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
   return `
   <!-- FYLD Email Signature -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:980px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:920px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- FOTO: célula única, centrada verticalmente -->
-      <td style="width:220px;vertical-align:middle;padding:0 22px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="200" style="display:block;width:200px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+      <!-- FOTO centrada -->
+      <td style="width:200px;vertical-align:middle;padding:0 20px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="180" style="display:block;width:180px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
       </td>
 
-      <!-- COL DIREITA: (logo+ISO) + (nome/contacts/icons) com gaps curtos -->
+      <!-- COL DIREITA -->
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
           <!-- LOGO + ISO -->
           <tr>
-            <td style="vertical-align:middle;padding:4px 0;">
-              <img src="${logo}" alt="FYLD" width="640" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+            <td style="vertical-align:middle;padding:2px 0;">
+              <img src="${logo}" alt="FYLD" width="600" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
-            <td style="width:160px;text-align:right;vertical-align:middle;padding-left:14px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="130" style="display:inline-block;max-width:130px;height:auto;border:0;outline:0;text-decoration:none;">
+            <td style="width:140px;text-align:right;vertical-align:middle;padding-left:10px;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="115" style="display:inline-block;max-width:115px;height:auto;border:0;outline:0;text-decoration:none;">
             </td>
           </tr>
 
-          <!-- (TIGHT) NOME + CONTACTOS + ÍCONES -->
+          <!-- NOME / CONTACTOS -->
           <tr>
-            <td colspan="2" style="padding-top:8px">
+            <td colspan="2" style="padding-top:6px">
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
                 <tr>
                   <!-- nome + cargo -->
                   <td style="vertical-align:top;">
-                    <div style="font-size:52px;line-height:56px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:24px;line-height:28px;margin-top:6px;">${esc(cargo)}</div>
+                    <div style="font-size:38px;line-height:42px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+                    <div style="font-size:18px;line-height:22px;margin-top:4px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- contactos (encostados, sem espaço à esquerda) -->
-                  <td style="vertical-align:top;padding-left:24px;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:20px;line-height:26px;">
+                  <!-- contactos -->
+                  <td style="vertical-align:top;padding-left:20px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:16px;line-height:22px;">
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">TM</td>
-                        <td style="padding-left:0">${esc(tm)}</td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;">TM</td>
+                        <td>${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;"></td>
-                        <td style="padding-left:0"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;"></td>
+                        <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
-                      <tr><td colspan="2" style="height:6px;"></td></tr>
-                      <tr><td colspan="2" style="font-size:18px;line-height:24px;padding-left:0">
+                      <tr><td colspan="2" style="height:4px;"></td></tr>
+                      <tr><td colspan="2" style="font-size:14px;line-height:20px;">
                         Rua Actor Taborda, 27<br/>1000-007 Lisboa
                       </td></tr>
                       <tr>
-                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:8px;">T</td>
-                        <td style="padding-left:0">(+351) 934 556 060</td>
+                        <td style="width:1px;white-space:nowrap;font-weight:700;padding-right:6px;">T</td>
+                        <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
                   <!-- ícones -->
-                  <td style="width:84px;vertical-align:top;padding-left:18px">
+                  <td style="width:72px;vertical-align:top;padding-left:14px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:4px 0;">
+                      <tr><td style="padding:3px 0;">
                         <a href="${LINKS.website}">
-                          <img src="${iconWeb}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Website">
+                          <img src="${iconWeb}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="Website">
                         </a>
                       </td></tr>
-                      <tr><td style="padding:4px 0;">
+                      <tr><td style="padding:3px 0;">
                         <a href="${LINKS.linkedin}">
-                          <img src="${iconIn}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
+                          <img src="${iconIn}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="LinkedIn">
                         </a>
                       </td></tr>
-                      <tr><td style="padding:4px 0;">
+                      <tr><td style="padding:3px 0;">
                         <a href="${LINKS.instagram}">
-                          <img src="${iconIg}" width="40" height="40" style="display:block;width:40px;height:40px;border:0;outline:0;text-decoration:none;" alt="Instagram">
+                          <img src="${iconIg}" width="36" height="36" style="display:block;width:36px;height:36px;border:0;outline:0;text-decoration:none;" alt="Instagram">
                         </a>
                       </td></tr>
                     </table>
@@ -165,7 +158,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   `;
 }
 
-/* === PREVIEW === */
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
@@ -178,7 +170,6 @@ function render(){
 [$nome,$cargo,$tm,$foto].forEach(i=>i.addEventListener('input',render));
 render();
 
-/* === COPIAR === */
 document.getElementById('copyBtn').addEventListener('click', async () => {
   const html = buildSignatureHTML({nome:$nome.value,cargo:$cargo.value,tm:$tm.value,foto:$foto.value});
   try{
@@ -196,7 +187,6 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
   }catch(e){ alert('Se não copiar automaticamente, seleciona a assinatura e copia manualmente.'); }
 });
 
-/* === ABRIR SÓ ASSINATURA === */
 document.getElementById('openBtn').addEventListener('click', () => {
   const params = new URLSearchParams({
     view:'signature',
@@ -206,7 +196,6 @@ document.getElementById('openBtn').addEventListener('click', () => {
   window.open(url, "_blank");
 });
 
-/* === MODO ASSINATURA-ONLY === */
 (function(){
   const qs = new URLSearchParams(location.search);
   if(qs.get('view')==='signature'){
@@ -231,19 +220,4 @@ document.getElementById('openBtn').addEventListener('click', () => {
         await navigator.clipboard.write([data]);
         btn.textContent='Copiada ✓'; setTimeout(()=>btn.textContent='Copiar assinatura',1200);
       }catch(e){ alert('Se não copiar automaticamente, seleciona e copia manualmente.'); }
-    });
-    document.body.appendChild(btn);
-  }
-})();
-</script>
 
-<!-- Patch: força render em qualquer ordem de carregamento -->
-<script>
-if (typeof render === "function") {
-  try { render(); } catch(e) {}
-  document.addEventListener("DOMContentLoaded", () => { try { render(); } catch(e) {} });
-  window.addEventListener("load", () => { try { render(); } catch(e) {} });
-}
-</script>
-</body>
-</html>
