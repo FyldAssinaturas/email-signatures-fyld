@@ -12,11 +12,14 @@
   @media (max-width:900px){ .grid{grid-template-columns:1fr} }
   h1{font-size:20px;margin:0 0 12px}
   label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
-  input[type="text"],input[type="tel"]{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px;}
+  input[type="text"],input[type="tel"]{
+    width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px;
+  }
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto}
+  .tip{font-size:12px;color:#666;margin-top:8px}
 </style>
 </head>
 <body>
@@ -38,7 +41,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p style="font-size:12px;color:#666;margin-top:8px">Assinatura v70-ALIGN-FINAL</p>
+      <p class="tip">Assinatura v70-ALIGN-FINAL-NBSP</p>
     </div>
 
     <div>
@@ -59,10 +62,6 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ return !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim())); }
 
-/* label column – SAME for all rows */
-const LABEL_W = 14;      // px
-const LABEL_PAD_R = 0;   // px (so “T” sits tight to the number)
-
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
@@ -75,7 +74,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- PHOTO (small + tight gap) -->
+      <!-- PHOTO -->
       <td style="width:128px;vertical-align:top;padding:0 2px 0 0;">
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="98" style="display:block;width:98px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
@@ -102,30 +101,31 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- CONTACTS: two-cell rows always (label + value) -->
+                  <!-- CONTACTS -->
                   <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:${LABEL_PAD_R}px;">TM</td>
+                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W}px;padding-right:${LABEL_PAD_R}px;"></td>
+                        <td style="width:14px;padding-right:0;">&nbsp;</td>
                         <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W}px;padding-right:${LABEL_PAD_R}px;"></td>
+                        <td style="width:14px;padding-right:0;">&nbsp;</td>
                         <td style="font-size:10.5px;line-height:14px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:${LABEL_PAD_R}px;">T</td>
+                        <td style="width:14px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
                   </td>
 
+                  <!-- ICONS -->
                   <td style="width:60px;vertical-align:top;padding-left:10px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding:2px 0;"><a href="${LINKS.website}">
@@ -228,3 +228,4 @@ if (typeof render === "function") {
 </script>
 </body>
 </html>
+
