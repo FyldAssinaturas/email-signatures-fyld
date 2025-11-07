@@ -17,7 +17,6 @@
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto}
-  .tip{font-size:12px;color:#666;margin-top:8px}
 </style>
 </head>
 <body>
@@ -33,13 +32,13 @@
       <label>TM (telemóvel, com indicativo)</label>
       <input id="tm" type="tel" value="(+351) 934 556 060" />
       <label>Imagem (ficheiro no repo ou URL)</label>
-      <input id="foto" type="text" value="headshot-filipa-freire.png" placeholder="ex.: headshot-joao-silva.png ou https://..." />
+      <input id="foto" type="text" value="headshot-filipa-freire.png" />
 
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">Assinatura v70-ALIGN-03 (força alinhamentos e gap da foto).</p>
+      <p style="font-size:12px;color:#666;margin-top:8px">Assinatura v70-ALIGN-FINAL</p>
     </div>
 
     <div>
@@ -60,10 +59,9 @@ const LINKS = {
 function esc(s){return (s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function resolveImgPath(v){ return !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim())); }
 
-/* alignment constants */
-const LABEL_W = 14;            // label column (TM/T)
-const LABEL_PAD_R = 2;         // space between label and value
-const VALUE_OFFSET = LABEL_W + LABEL_PAD_R;  // left offset for all values
+/* label column – SAME for all rows */
+const LABEL_W = 14;      // px
+const LABEL_PAD_R = 0;   // px (so “T” sits tight to the number)
 
 function buildSignatureHTML({nome, cargo, tm, foto}){
   const logo = RAW + "fyld-logo.png";
@@ -77,19 +75,20 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   <!-- FYLD Email Signature (70%) -->
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:650px;max-width:100%;font-family:Mogno, Arial, Helvetica, sans-serif;color:#000;">
     <tr>
-      <!-- PHOTO: smaller + tighter gap -->
+      <!-- PHOTO (small + tight gap) -->
       <td style="width:128px;vertical-align:top;padding:0 2px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="98" style="display:block;width:98px;height:auto;border-radius:999px;border:0;outline:0;text-decoration:none;">` : ``}
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="98" style="display:block;width:98px;height:auto;border-radius:999px;border:0;">` : ``}
       </td>
 
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+          <!-- LOGO + ISO -->
           <tr>
             <td style="vertical-align:middle;padding:2px 0;">
-              <img src="${logo}" alt="FYLD" width="420" style="display:block;max-width:100%;height:auto;border:0;outline:0;text-decoration:none;">
+              <img src="${logo}" alt="FYLD" width="420" style="display:block;max-width:100%;height:auto;border:0;">
             </td>
             <td style="width:110px;text-align:right;vertical-align:middle;padding-left:8px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="81" style="display:inline-block;max-width:81px;height:auto;border:0;outline:0;text-decoration:none;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="81" style="display:inline-block;max-width:81px;height:auto;border:0;">
             </td>
           </tr>
 
@@ -103,7 +102,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                     <div style="font-size:13px;line-height:18px;margin-top:3px;">${esc(cargo)}</div>
                   </td>
 
-                  <!-- CONTACTS: start exactly on the guide (no left padding) -->
+                  <!-- CONTACTS: two-cell rows always (label + value) -->
                   <td style="vertical-align:top;padding-left:0;">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:11.5px;line-height:16px;">
                       <tr>
@@ -111,17 +110,17 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="word-break:break-word;">${esc(tm)}</td>
                       </tr>
                       <tr>
-                        <td style="width:${VALUE_OFFSET}px;"></td>
+                        <td style="width:${LABEL_W}px;padding-right:${LABEL_PAD_R}px;"></td>
                         <td><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
                       <tr>
-                        <td style="width:${VALUE_OFFSET}px;"></td>
+                        <td style="width:${LABEL_W}px;padding-right:${LABEL_PAD_R}px;"></td>
                         <td style="font-size:10.5px;line-height:14px;">
                           Rua Actor Taborda, 27<br/>1000-007 Lisboa
                         </td>
                       </tr>
                       <tr>
-                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:1px;">T</td>
+                        <td style="width:${LABEL_W}px;white-space:nowrap;font-weight:700;padding-right:${LABEL_PAD_R}px;">T</td>
                         <td>(+351) 934 556 060</td>
                       </tr>
                     </table>
@@ -130,13 +129,13 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                   <td style="width:60px;vertical-align:top;padding-left:10px">
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                       <tr><td style="padding:2px 0;"><a href="${LINKS.website}">
-                        <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Website"></a>
+                        <img src="${iconWeb}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Website"></a>
                       </td></tr>
                       <tr><td style="padding:2px 0;"><a href="${LINKS.linkedin}">
-                        <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="LinkedIn"></a>
+                        <img src="${iconIn}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="LinkedIn"></a>
                       </td></tr>
                       <tr><td style="padding:2px 0;"><a href="${LINKS.instagram}">
-                        <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;outline:0;text-decoration:none;" alt="Instagram"></a>
+                        <img src="${iconIg}" width="28" height="28" style="display:block;width:28px;height:28px;border:0;" alt="Instagram"></a>
                       </td></tr>
                     </table>
                   </td>
@@ -196,10 +195,8 @@ document.getElementById('openBtn').addEventListener('click', () => {
     document.body.innerHTML='';
     document.body.style.background='#fff';
     const html = buildSignatureHTML({
-      nome: qs.get('nome')||'',
-      cargo: qs.get('cargo')||'',
-      tm: qs.get('tm')||'',
-      foto: qs.get('foto')||''
+      nome: qs.get('nome')||'', cargo: qs.get('cargo')||'',
+      tm: qs.get('tm')||'', foto: qs.get('foto')||''
     });
     const host=document.createElement('div'); host.innerHTML=html; document.body.appendChild(host);
 
@@ -224,3 +221,10 @@ document.getElementById('openBtn').addEventListener('click', () => {
 
 <script>
 if (typeof render === "function") {
+  try { render(); } catch(e) {}
+  document.addEventListener("DOMContentLoaded", () => { try { render(); } catch(e) {} });
+  window.addEventListener("load", () => { try { render(); } catch(e) {} });
+}
+</script>
+</body>
+</html>
