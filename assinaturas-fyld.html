@@ -39,7 +39,7 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD v100 — ISO + icons moved closer 🎯</p>
+      <p class="tip">FYLD v110 — same-cell logo+ISO, tight icons, spacer row</p>
     </div>
 
     <div>
@@ -80,68 +80,67 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
       <!-- RIGHT SIDE -->
       <td style="vertical-align:top;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+          <!-- HEADER: logo + ISO in the SAME cell (inner table) -->
           <tr>
-            <td style="vertical-align:middle;padding:0;">
-              <img src="${logo}" alt="FYLD" width="330" style="display:block;max-width:100%;height:auto;border:0;">
-            </td>
-            <td style="width:60px;text-align:right;vertical-align:middle;padding-left:0;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
+            <td colspan="3" style="padding:0;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                  <td style="padding:0;vertical-align:middle;">
+                    <img src="${logo}" alt="FYLD" width="330" style="display:block;max-width:100%;height:auto;border:0;">
+                  </td>
+                  <td style="white-space:nowrap;vertical-align:middle;padding:0 0 0 6px;">
+                    <img src="${iso}" alt="ISO/IEC 27001 Certified" width="64" style="display:inline-block;max-width:64px;height:auto;border:0;">
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
+          <!-- BODY: keep a consistent 3-column grid -->
           <tr>
-            <td colspan="2" style="padding-top:3px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+            <td style="vertical-align:top;padding-top:3px;">
+              <div style="font-size:21px;line-height:25px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
+              <div style="font-size:10.5px;line-height:14px;margin-top:2px;">${esc(cargo)}</div>
+            </td>
+
+            <!-- CONTACTS -->
+            <td style="vertical-align:top;padding-left:0;padding-top:3px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:9.8px;line-height:13px;">
                 <tr>
-                  <!-- Name & Title -->
-                  <td style="vertical-align:top;">
-                    <div style="font-size:21px;line-height:25px;font-weight:800;white-space:nowrap;">${esc(nome)}</div>
-                    <div style="font-size:10.5px;line-height:14px;margin-top:2px;">${esc(cargo)}</div>
-                  </td>
-
-                  <!-- CONTACTS -->
-                  <td style="vertical-align:top;padding-left:0;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="font-size:9.8px;line-height:13px;">
-                      <tr>
-                        <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
-                        <td>${esc(tm)}</td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="padding:0;padding-left:10px;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
-                        </td>
-                      </tr>
-
-                      <!-- spacer row -->
-                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
-
-                      <tr>
-                        <td colspan="2" style="padding:0;padding-left:10px;font-size:8.8px;line-height:12px;">
-                          Rua Actor Taborda, 27<br/>1000-007 Lisboa
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
-                        <td>(+351) 934 556 060</td>
-                      </tr>
-                    </table>
-                  </td>
-
-                  <!-- ICONS -->
-                  <td style="width:35px;vertical-align:top;padding-left:0;">
-                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                      <tr><td style="padding:0;">
-                        <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
-                      </td></tr>
-                      <tr><td style="padding:0;">
-                        <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
-                      </td></tr>
-                      <tr><td style="padding:0;">
-                        <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;"></a>
-                      </td></tr>
-                    </table>
+                  <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">TM</td>
+                  <td>${esc(tm)}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding:0;padding-left:10px;">
+                    <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
                   </td>
                 </tr>
+                <!-- spacer row -->
+                <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+                <tr>
+                  <td colspan="2" style="padding:0;padding-left:10px;font-size:8.8px;line-height:12px;">
+                    Rua Actor Taborda, 27<br/>1000-007 Lisboa
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:10px;white-space:nowrap;font-weight:700;padding-right:0;">T</td>
+                  <td>(+351) 934 556 060</td>
+                </tr>
+              </table>
+            </td>
+
+            <!-- ICONS (tight) -->
+            <td style="width:35px;vertical-align:top;padding-left:4px;padding-top:3px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr><td style="padding:0;"><a href="${LINKS.website}">
+                  <img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Website"></a>
+                </td></tr>
+                <tr><td style="padding:0;"><a href="${LINKS.linkedin}">
+                  <img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="LinkedIn"></a>
+                </td></tr>
+                <tr><td style="padding:0;"><a href="${LINKS.instagram}">
+                  <img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;" alt="Instagram"></a>
+                </td></tr>
               </table>
             </td>
           </tr>
