@@ -59,7 +59,6 @@ const LINKS = {
   website:   "https://www.fyld.pt/"
 };
 
-// helpers
 const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
@@ -72,13 +71,11 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const iconIg  = RAW + "icon-instagram.png";
   const head = resolveImg(foto);
 
-  // layout constants
   const LOGO_W  = 340;
   const SIDE_W  = 64;
   const ISO_W   = 56;
   const LABEL_W = 16;
 
-  // inner signature
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
          style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;
@@ -115,17 +112,16 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
                   <td style="vertical-align:top;padding-left:10px;">
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
+                      <!-- TM -->
                       <tr>
                         <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
-                      <tr>
-                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
-                        <td style="white-space:nowrap;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
-                      </tr>
 
+                      <!-- space after TM -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
+                      <!-- Address -->
                       <tr>
                         <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
                         <td style="white-space:nowrap;">Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27</td>
@@ -135,12 +131,19 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;">1000-007&nbsp;Lisboa</td>
                       </tr>
 
-                      <!-- new space before phone -->
+                      <!-- space before T -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
+                      <!-- T -->
                       <tr>
                         <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">T</td>
-                        <td style="white-space:nowrap;">(+351)&nbsp;934&nbsp;556&nbsp;060</td>
+                        <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
+                      </tr>
+
+                      <!-- fyld.pt at the end -->
+                      <tr>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
                       </tr>
                     </table>
                   </td>
@@ -167,7 +170,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
     </tr>
   </table>`;
 
-  // wrapper
   return `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
          style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;margin:0;padding:0;">
@@ -179,7 +181,6 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   </table>`;
 }
 
-// DOM
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
@@ -239,3 +240,4 @@ if (new URLSearchParams(location.search).get('view')==='signature'){
 </script>
 </body>
 </html>
+
