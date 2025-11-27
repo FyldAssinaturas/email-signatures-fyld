@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assinaturas FYLD — Builder (Bruxelles)</title>
+<style>
+  html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
+  .wrap{max-width:1100px;margin:24px auto;padding:20px}
+  .card{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:18px}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  h1{font-size:20px;margin:0 0 12px}
+  label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
+  input[type="text"],input[type="tel"]{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
+  button.secondary{background:#111;opacity:.85}
+  .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto;min-height:140px}
+  .tip{font-size:12px;color:#666;margin-top:8px}
+  .error{background:#fff3f3;border:1px solid #e99;border-radius:10px;padding:10px;color:#900;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono","Courier New", monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Assinaturas FYLD — Builder (Bruxelles)</h1>
+
+  <div class="grid card">
+    <div>
+      <label>Nome</label>
+      <input id="nome" type="text" value="Filipa Freire">
+      <label>Cargo</label>
+      <input id="cargo" type="text" value="Graphic Designer">
+      <label>TM (telemóvel, com indicativo)</label>
+      <input id="tm" type="tel" value="(+351) 934 556 060">
+      <label>Imagem (ficheiro no repo ou URL)</label>
+      <input id="foto" type="text" value="headshot-filipa-freire.png">
+
+      <div class="row" style="margin-top:14px">
+        <button id="copyBtn">Copiar assinatura (HTML)</button>
+        <button class="secondary" id="openBtn">Abrir só a assinatura</button>
+      </div>
+      <p class="tip">FYLD — versão Bruxelas (morada Rue des Colonies 11, 1000 Bruxelles)</p>
+    </div>
+
+    <div>
+      <div class="sig-outer"><div id="signaturePreview"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ORG  = "FyldAssinaturas";
+const REPO = "email-signatures-fyld";
+const RAW  = `https://raw.githubusercontent.com/${ORG}/${REPO}/main/`;
+const LINKS = {
+  instagram: "https://www.instagram.com/mainfyld/",
+  linkedin:  "https://www.linkedin.com/company/fyld/",
+  website:   "https://www.fyld.pt/"
+};
+
+const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
+const NB = s => (s||"").replace(/\s/g,'&nbsp;');
+
+function buildSignatureHTML({nome, cargo, tm, foto}){
+  const logo = RAW + "fyld-logo.png";
+  const iso  = RAW + "certificacao-iso.png";
+  const iconWeb = RAW + "icon-website.png";
+  const iconIn  = RAW + "icon-linkedin.png";
+  const iconIg  = RAW + "icon-instagram.png";
+  const head = resolveImg(foto);
+
+  const LOGO_W  = 340;
+  const SIDE_W  = 64;
+  const ISO_W   = 56;
+  const LABEL_W = 16;
+
+  const inner = `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="width:${LOGO_W+110+SIDE_W+10}px;max-width:100%;
+                font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
+                font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
+    <tr>
+      <td style="width:110px;vertical-align:top;padding:0 6px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="106"
+             style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
+      </td>
+
+      <td style="vertical-align:top;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+               style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
+          <tr>
+            <td style="vertical-align:middle;padding:0;width:${LOGO_W}px;">
+              <img src="${logo}" alt="FYLD" width="${LOGO_W}"
+                   style="display:block;max-width:100%;height:auto;border:0;margin:0;">
+            </td>
+            <td style="vertical-align:middle;padding-left:14px;width:${SIDE_W}px;white-space:nowrap;">
+              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}"
+                   style="display:block;height:auto;border:0;margin:0;">
+            </td>
+          </tr>
+
+          <tr>
+            <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;border-collapse:collapse;">
+                <tr>
+                  <td style="vertical-align:top;">
+                    <!-- Nome (permite quebra de linha, sem "..." ) -->
+                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:normal;max-width:${LOGO_W - 40}px;">
+                      ${esc(nome)}
+                    </div>
+                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
+                  </td>
+
+                  <td style="vertical-align:top;padding-left:10px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
+                      <!-- TM -->
+                      <tr>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
+                        <td style="white-space:nowrap;">${NB(esc(tm))}</td>
+                      </tr>
+
+                      <!-- small spacer -->
+                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+
+                      <!-- Address (Bruxelles) -->
+                      <tr>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;">Rue&nbsp;des&nbsp;Colonies&nbsp;11</td>
+                      </tr>
+                      <tr>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;">1000&nbsp;Bruxelles</td>
+                      </tr>
+
+                      <!-- small spacer -->
+                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+
+                      <!-- T -->
+                      <tr>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">T</td>
+                        <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
+                      </tr>
+
+                      <!-- fyld.pt -->
+                      <tr>
+                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td style="white-space:nowrap;">
+                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+
+            <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;border-collapse:collapse;">
+                <tr><td style="padding:0 0 4px 0;">
+                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
+                </td></tr>
+                <tr><td style="padding:0 0 4px 0;">
+                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
+                </td></tr>
+                <tr><td style="padding:0;">
+                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
+                </td></tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>`;
+
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+         style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;margin:0;padding:0;">
+    <tr>
+      <td style="margin:0;padding:0;line-height:0;font-size:0;">
+        ${inner}
+      </td>
+    </tr>
+  </table>`;
+}
+
+const $nome = document.getElementById('nome');
+const $cargo= document.getElementById('cargo');
+const $tm   = document.getElementById('tm');
+const $foto = document.getElementById('foto');
+const $prev = document.getElementById('signaturePreview');
+
+function render(){
+  try{
+    const html = buildSignatureHTML({
+      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    });
+    $prev.innerHTML = html;
+  }catch(err){
+    $prev.innerHTML = `<div class="error"><strong>Erro a renderizar assinatura:</strong><br>${esc(String(err))}</div>`;
+    console.error(err);
+  }
+}
+[$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
+render();
+
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  try{
+    const html = buildSignatureHTML({
+      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    });
+    if (navigator.clipboard && window.ClipboardItem){
+      const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
+      await navigator.clipboard.write([data]);
+      alert('Assinatura copiada! ✨');
+    }else{
+      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
+      alert('Assinatura copiada! ✨');
+    }
+  }catch(err){
+    alert('Não foi possível copiar automaticamente. Podes copiar manualmente a partir da pré-visualização.');
+    console.error(err);
+  }
+});
+
+document.getElementById('openBtn').addEventListener('click', () => {
+  const qs = new URLSearchParams({
+    view:'signature',
+    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+  });
+  window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
+});
+
+if (new URLSearchParams(location.search).get('view')==='signature'){
+  const p = new URLSearchParams(location.search);
+  const html = buildSignatureHTML({
+    nome:p.get('nome')||'', cargo:p.get('cargo')||'',
+    tm:p.get('tm')||'', foto:p.get('foto')||''
+  });
+  document.body.innerHTML = html;
+}
+</script>
+</body>
+</html>
