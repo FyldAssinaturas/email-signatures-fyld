@@ -106,7 +106,10 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;border-collapse:collapse;">
                 <tr>
                   <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;max-width:${Math.floor(LOGO_W*0.55)}px;overflow:hidden;text-overflow:ellipsis;">${esc(nome)}</div>
+                    <!-- NOME: agora permite quebra de linha e não corta com "..." -->
+                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:normal;max-width:${LOGO_W - 40}px;">
+                      ${esc(nome)}
+                    </div>
                     <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
                   </td>
 
