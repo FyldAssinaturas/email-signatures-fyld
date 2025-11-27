@@ -78,13 +78,13 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:${LOGO_W+90+SIDE_W+10}px;max-width:100%;
+         style="width:${LOGO_W+100+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
     <tr>
-      <td style="width:90px;vertical-align:top;padding:0 6px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="82"
-             style="display:block;width:82px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
+      <td style="width:100px;vertical-align:top;padding:0 6px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="96"
+             style="display:block;width:96px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
       </td>
 
       <td style="vertical-align:top;">
@@ -240,4 +240,3 @@ if (new URLSearchParams(location.search).get('view')==='signature'){
 </script>
 </body>
 </html>
-
