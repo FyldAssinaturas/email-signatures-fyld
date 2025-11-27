@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assinaturas FYLD — Builder (Bruxelles)</title>
+<title>Assinaturas FYLD — Builder (Bruxelas)</title>
 <style>
   html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
   .wrap{max-width:1100px;margin:24px auto;padding:20px}
@@ -23,7 +23,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Assinaturas FYLD — Builder (Bruxelles)</h1>
+  <h1>Assinaturas FYLD — Builder (Bruxelas)</h1>
 
   <div class="grid card">
     <div>
@@ -31,8 +31,13 @@
       <input id="nome" type="text" value="Filipa Freire">
       <label>Cargo</label>
       <input id="cargo" type="text" value="Graphic Designer">
-      <label>TM (telemóvel, com indicativo)</label>
-      <input id="tm" type="tel" value="(+351) 934 556 060">
+
+      <label>TM (telemóvel principal, com indicativo)</label>
+      <input id="tm" type="tel" value="(+32) 000 000 000">
+
+      <label>TM (segundo telemóvel, opcional)</label>
+      <input id="tm2" type="tel" value="">
+
       <label>Imagem (ficheiro no repo ou URL)</label>
       <input id="foto" type="text" value="headshot-filipa-freire.png">
 
@@ -40,7 +45,10 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — versão Bruxelas (morada Rue des Colonies 11, 1000 Bruxelles)</p>
+
+      <p class="tip">
+        FYLD — Bruxelas (Rue des Colonies 11 / 1000 Bruxelles • 2 TM opcionais)
+      </p>
     </div>
 
     <div>
@@ -63,7 +71,7 @@ const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
-function buildSignatureHTML({nome, cargo, tm, foto}){
+function buildSignatureHTML({nome, cargo, tm, tm2, foto}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
@@ -75,6 +83,8 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const SIDE_W  = 64;
   const ISO_W   = 56;
   const LABEL_W = 16;
+
+  const hasTm2 = !!(tm2 && tm2.trim());
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -106,25 +116,45 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;border-collapse:collapse;">
                 <tr>
                   <td style="vertical-align:top;">
-                    <!-- Nome (permite quebra de linha, sem "..." ) -->
+
+                    <!-- Nome (permite quebra de linha e nunca corta) -->
                     <div style="font-size:22px;line-height:26px;font-weight:800;white-space:normal;max-width:${LOGO_W - 40}px;">
                       ${esc(nome)}
                     </div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
+
+                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">
+                      ${esc(cargo)}
+                    </div>
                   </td>
 
                   <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
-                      <!-- TM -->
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+                           style="font-size:10px;line-height:14px;border-collapse:collapse;">
+
+                      <!-- TM 1 -->
                       <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">
+                          TM
+                        </td>
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
 
-                      <!-- small spacer -->
+                      <!-- TM 2 (opcional, só aparece se houver conteúdo) -->
+                      ${
+                        hasTm2
+                          ? `<tr>
+                               <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">
+                                 TM
+                               </td>
+                               <td style="white-space:nowrap;">${NB(esc(tm2))}</td>
+                             </tr>`
+                          : ``
+                      }
+
+                      <!-- espaço -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
-                      <!-- Address (Bruxelles) -->
+                      <!-- Morada Bruxelas -->
                       <tr>
                         <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
                         <td style="white-space:nowrap;">Rue&nbsp;des&nbsp;Colonies&nbsp;11</td>
@@ -134,42 +164,56 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;">1000&nbsp;Bruxelles</td>
                       </tr>
 
-                      <!-- small spacer -->
+                      <!-- espaço -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
-                      <!-- T -->
-                      <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">T</td>
-                        <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
-                      </tr>
-
-                      <!-- fyld.pt -->
+                      <!-- website -->
                       <tr>
                         <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
                         <td style="white-space:nowrap;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
+                          <a href="${LINKS.website}"
+                             style="color:#000;text-decoration:none;font-weight:700;">
+                            fyld.pt
+                          </a>
                         </td>
                       </tr>
+
                     </table>
                   </td>
                 </tr>
               </table>
             </td>
 
+            <!-- Icons -->
             <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;border-collapse:collapse;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+                     style="width:${SIDE_W}px;border-collapse:collapse;">
+
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
+                  <a href="${LINKS.website}">
+                    <img src="${iconWeb}" width="22" height="22"
+                         style="display:block;border:0;margin:0;" alt="Website">
+                  </a>
                 </td></tr>
+
                 <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
+                  <a href="${LINKS.linkedin}">
+                    <img src="${iconIn}" width="22" height="22"
+                         style="display:block;border:0;margin:0;" alt="LinkedIn">
+                  </a>
                 </td></tr>
+
                 <tr><td style="padding:0;">
-                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
+                  <a href="${LINKS.instagram}">
+                    <img src="${iconIg}" width="22" height="22"
+                         style="display:block;border:0;margin:0;" alt="Instagram">
+                  </a>
                 </td></tr>
+
               </table>
             </td>
           </tr>
+
         </table>
       </td>
     </tr>
@@ -189,13 +233,18 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
+const $tm2  = document.getElementById('tm2');
 const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
 
 function render(){
   try{
     const html = buildSignatureHTML({
-      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+      nome:$nome.value,
+      cargo:$cargo.value,
+      tm:$tm.value,
+      tm2:$tm2.value,
+      foto:$foto.value
     });
     $prev.innerHTML = html;
   }catch(err){
@@ -203,13 +252,17 @@ function render(){
     console.error(err);
   }
 }
-[$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
+[$nome,$cargo,$tm,$tm2,$foto].forEach(el => el.addEventListener('input', render));
 render();
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
   try{
     const html = buildSignatureHTML({
-      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+      nome:$nome.value,
+      cargo:$cargo.value,
+      tm:$tm.value,
+      tm2:$tm2.value,
+      foto:$foto.value
     });
     if (navigator.clipboard && window.ClipboardItem){
       const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
@@ -229,7 +282,11 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
 document.getElementById('openBtn').addEventListener('click', () => {
   const qs = new URLSearchParams({
     view:'signature',
-    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    tm2:$tm2.value,
+    foto:$foto.value
   });
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
@@ -237,8 +294,11 @@ document.getElementById('openBtn').addEventListener('click', () => {
 if (new URLSearchParams(location.search).get('view')==='signature'){
   const p = new URLSearchParams(location.search);
   const html = buildSignatureHTML({
-    nome:p.get('nome')||'', cargo:p.get('cargo')||'',
-    tm:p.get('tm')||'', foto:p.get('foto')||''
+    nome:p.get('nome')||'',
+    cargo:p.get('cargo')||'',
+    tm:p.get('tm')||'',
+    tm2:p.get('tm2')||'',
+    foto:p.get('foto')||''
   });
   document.body.innerHTML = html;
 }
