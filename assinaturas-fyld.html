@@ -78,13 +78,13 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:${LOGO_W+100+SIDE_W+10}px;max-width:100%;
+         style="width:${LOGO_W+110+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
     <tr>
-      <td style="width:100px;vertical-align:top;padding:0 6px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="96"
-             style="display:block;width:96px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
+      <td style="width:110px;vertical-align:top;padding:0 6px 0 0;">
+        ${head ? `<img src="${head}" alt="${esc(nome)}" width="106"
+             style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
       </td>
 
       <td style="vertical-align:top;">
@@ -118,7 +118,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
 
-                      <!-- added small space between TM and address -->
+                      <!-- small spacer -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
                       <!-- Address -->
@@ -131,7 +131,7 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;">1000-007&nbsp;Lisboa</td>
                       </tr>
 
-                      <!-- space before T -->
+                      <!-- small spacer -->
                       <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
 
                       <!-- T -->
@@ -140,10 +140,12 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
                         <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
                       </tr>
 
-                      <!-- fyld.pt at the end -->
+                      <!-- fyld.pt -->
                       <tr>
                         <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
-                        <td style="white-space:nowrap;"><a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a></td>
+                        <td style="white-space:nowrap;">
+                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
+                        </td>
                       </tr>
                     </table>
                   </td>
