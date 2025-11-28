@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assinaturas FYLD — Builder</title>
+<title>Assinaturas FYLD — Builder (Lisboa, 2 TM)</title>
 <style>
   html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
   .wrap{max-width:1100px;margin:24px auto;padding:20px}
@@ -21,18 +21,25 @@
   .error{background:#fff3f3;border:1px solid #e99;border-radius:10px;padding:10px;color:#900;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono","Courier New", monospace}
 </style>
 </head>
+
 <body>
 <div class="wrap">
-  <h1>Assinaturas FYLD — Builder</h1>
+  <h1>Assinaturas FYLD — Builder (Lisboa, 2 TM)</h1>
 
   <div class="grid card">
     <div>
       <label>Nome</label>
       <input id="nome" type="text" value="Filipa Freire">
+
       <label>Cargo</label>
       <input id="cargo" type="text" value="Graphic Designer">
-      <label>TM (telemóvel, com indicativo)</label>
-      <input id="tm" type="tel" value="(+351) 934 556 060">
+
+      <label>TM (principal, com indicativo)</label>
+      <input id="tm" type="tel" value="(+351) 934 000 000">
+
+      <label>TM (opcional)</label>
+      <input id="tm2" type="tel" value="">
+
       <label>Imagem (ficheiro no repo ou URL)</label>
       <input id="foto" type="text" value="headshot-filipa-freire.png">
 
@@ -40,7 +47,8 @@
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
-      <p class="tip">FYLD — versão final (ISO maior, colunas alinhadas, ícones juntos, +12px sob o logo)</p>
+
+      <p class="tip">FYLD — Lisboa (morada atualizada + 2 TM opcionais)</p>
     </div>
 
     <div>
@@ -63,7 +71,7 @@ const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'
 const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
-function buildSignatureHTML({nome, cargo, tm, foto}){
+function buildSignatureHTML({nome, cargo, tm, tm2, foto}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
@@ -75,172 +83,226 @@ function buildSignatureHTML({nome, cargo, tm, foto}){
   const SIDE_W  = 64;
   const ISO_W   = 56;
   const LABEL_W = 16;
+  const hasTm2 = !!(tm2 && tm2.trim());
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
          style="width:${LOGO_W+110+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
+
     <tr>
       <td style="width:110px;vertical-align:top;padding:0 6px 0 0;">
         ${head ? `<img src="${head}" alt="${esc(nome)}" width="106"
-             style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
+          style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
       </td>
 
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
+
+          <!-- LOGO + ISO -->
           <tr>
-            <td style="vertical-align:middle;padding:0;width:${LOGO_W}px;">
+            <td style="vertical-align:middle;width:${LOGO_W}px;">
               <img src="${logo}" alt="FYLD" width="${LOGO_W}"
                    style="display:block;max-width:100%;height:auto;border:0;margin:0;">
             </td>
-            <td style="vertical-align:middle;padding-left:14px;width:${SIDE_W}px;white-space:nowrap;">
+            <td style="vertical-align:middle;padding-left:14px;width:${SIDE_W}px;">
               <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}"
                    style="display:block;height:auto;border:0;margin:0;">
             </td>
           </tr>
 
+          <!-- NOME + DETALHES -->
           <tr>
             <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${LOGO_W}px;border-collapse:collapse;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+                     style="width:${LOGO_W}px;border-collapse:collapse;">
+
                 <tr>
+                  <!-- Nome -->
                   <td style="vertical-align:top;">
-                    <!-- NOME: agora permite quebra de linha e não corta com "..." -->
-                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:normal;max-width:${LOGO_W - 40}px;">
+                    <div style="font-size:22px;line-height:26px;font-weight:800;
+                                white-space:normal;max-width:${LOGO_W - 40}px;">
                       ${esc(nome)}
                     </div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">${esc(cargo)}</div>
+                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">
+                      ${esc(cargo)}
+                    </div>
                   </td>
 
+                  <!-- Contactos -->
                   <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:10px;line-height:14px;border-collapse:collapse;">
-                      <!-- TM -->
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+                           style="font-size:10px;line-height:14px;border-collapse:collapse;">
+
+                      <!-- TM 1 -->
                       <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">TM</td>
+                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
 
-                      <!-- small spacer -->
-                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+                      <!-- TM 2 (opcional) -->
+                      ${
+                        hasTm2
+                          ? `<tr>
+                               <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
+                               <td style="white-space:nowrap;">${NB(esc(tm2))}</td>
+                             </tr>`
+                          : ``
+                      }
 
-                      <!-- Address -->
+                      <!-- espaço -->
+                      <tr><td colspan="2" style="height:4px;"></td></tr>
+
+                      <!-- Morada Lisboa atualizada -->
                       <tr>
-                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
-                        <td style="white-space:nowrap;">Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27</td>
+                        <td>&nbsp;</td>
+                        <td style="white-space:nowrap;">Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27,&nbsp;3º&nbsp;Piso</td>
                       </tr>
+
                       <tr>
-                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
+                        <td>&nbsp;</td>
                         <td style="white-space:nowrap;">1000-007&nbsp;Lisboa</td>
                       </tr>
 
-                      <!-- small spacer -->
-                      <tr><td colspan="2" style="height:4px;line-height:4px;">&nbsp;</td></tr>
+                      <!-- espaço -->
+                      <tr><td colspan="2" style="height:4px;"></td></tr>
 
-                      <!-- T -->
+                      <!-- Telefone fixo -->
                       <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;white-space:nowrap;">T</td>
+                        <td style="font-weight:700;">T</td>
                         <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
                       </tr>
 
                       <!-- fyld.pt -->
                       <tr>
-                        <td style="width:${LABEL_W}px;padding-right:4px;">&nbsp;</td>
-                        <td style="white-space:nowrap;">
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">fyld.pt</a>
+                        <td>&nbsp;</td>
+                        <td>
+                          <a href="${LINKS.website}"
+                             style="color:#000;text-decoration:none;font-weight:700;">
+                            fyld.pt
+                          </a>
                         </td>
                       </tr>
+
                     </table>
                   </td>
                 </tr>
+
               </table>
             </td>
 
+            <!-- Icons -->
             <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:${SIDE_W}px;border-collapse:collapse;">
-                <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.website}"><img src="${iconWeb}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Website"></a>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+
+                <tr><td style="padding-bottom:4px;">
+                  <a href="${LINKS.website}">
+                    <img src="${iconWeb}" width="22" height="22" style="display:block;">
+                  </a>
                 </td></tr>
-                <tr><td style="padding:0 0 4px 0;">
-                  <a href="${LINKS.linkedin}"><img src="${iconIn}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="LinkedIn"></a>
+
+                <tr><td style="padding-bottom:4px;">
+                  <a href="${LINKS.linkedin}">
+                    <img src="${iconIn}" width="22" height="22" style="display:block;">
+                  </a>
                 </td></tr>
-                <tr><td style="padding:0;">
-                  <a href="${LINKS.instagram}"><img src="${iconIg}" width="22" height="22" style="display:block;width:22px;height:22px;border:0;margin:0;" alt="Instagram"></a>
+
+                <tr><td>
+                  <a href="${LINKS.instagram}">
+                    <img src="${iconIg}" width="22" height="22" style="display:block;">
+                  </a>
                 </td></tr>
+
               </table>
             </td>
           </tr>
+
         </table>
       </td>
     </tr>
+
   </table>`;
 
   return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;margin:0;padding:0;">
-    <tr>
-      <td style="margin:0;padding:0;line-height:0;font-size:0;">
-        ${inner}
-      </td>
-    </tr>
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tr><td>${inner}</td></tr>
   </table>`;
 }
 
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
+const $tm2  = document.getElementById('tm2');
 const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
 
 function render(){
   try{
-    const html = buildSignatureHTML({
-      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    $prev.innerHTML = buildSignatureHTML({
+      nome:$nome.value,
+      cargo:$cargo.value,
+      tm:$tm.value,
+      tm2:$tm2.value,
+      foto:$foto.value
     });
-    $prev.innerHTML = html;
   }catch(err){
-    $prev.innerHTML = `<div class="error"><strong>Erro a renderizar assinatura:</strong><br>${esc(String(err))}</div>`;
-    console.error(err);
+    $prev.innerHTML = `<div class="error">Erro: ${esc(String(err))}</div>`;
   }
 }
-[$nome,$cargo,$tm,$foto].forEach(el => el.addEventListener('input', render));
+
+[$nome,$cargo,$tm,$tm2,$foto].forEach(el => el.addEventListener('input', render));
 render();
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
   try{
     const html = buildSignatureHTML({
-      nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+      nome:$nome.value,
+      cargo:$cargo.value,
+      tm:$tm.value,
+      tm2:$tm2.value,
+      foto:$foto.value
     });
+
     if (navigator.clipboard && window.ClipboardItem){
-      const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
-      await navigator.clipboard.write([data]);
+      await navigator.clipboard.write([
+        new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})})
+      ]);
       alert('Assinatura copiada! ✨');
-    }else{
-      const ta=document.createElement('textarea'); ta.value=html; document.body.appendChild(ta);
+    } else {
+      const ta=document.createElement('textarea');
+      ta.value=html; document.body.appendChild(ta);
       ta.select(); document.execCommand('copy'); ta.remove();
       alert('Assinatura copiada! ✨');
     }
+
   }catch(err){
-    alert('Não foi possível copiar automaticamente. Podes copiar manualmente a partir da pré-visualização.');
-    console.error(err);
+    alert('Erro a copiar.');
   }
 });
 
 document.getElementById('openBtn').addEventListener('click', () => {
   const qs = new URLSearchParams({
     view:'signature',
-    nome:$nome.value, cargo:$cargo.value, tm:$tm.value, foto:$foto.value
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    tm2:$tm2.value,
+    foto:$foto.value
   });
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
 
 if (new URLSearchParams(location.search).get('view')==='signature'){
   const p = new URLSearchParams(location.search);
-  const html = buildSignatureHTML({
-    nome:p.get('nome')||'', cargo:p.get('cargo')||'',
-    tm:p.get('tm')||'', foto:p.get('foto')||''
+  document.body.innerHTML = buildSignatureHTML({
+    nome:p.get('nome')||'',
+    cargo:p.get('cargo')||'',
+    tm:p.get('tm')||'',
+    tm2:p.get('tm2')||'',
+    foto:p.get('foto')||''
   });
-  document.body.innerHTML = html;
 }
 </script>
 </body>
