@@ -73,6 +73,7 @@ function buildSignatureHTML({nome, cargo, tm}){
   const ISO_W   = 56;
   const LABEL_W = 16;
   const OUTER_W = LOGO_W + SIDE_W + 10;
+  const hasTm   = !!(tm && tm.trim()); /* ← NOVO: verifica se o TM foi preenchido */
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -120,7 +121,10 @@ function buildSignatureHTML({nome, cargo, tm}){
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                            style="font-size:10px;line-height:14px;border-collapse:collapse;">
 
-                      <!-- TM único -->
+                      <!-- TM único (opcional) -->
+                      ${
+                        hasTm
+                          ? `
                       <tr>
                         <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
@@ -128,6 +132,9 @@ function buildSignatureHTML({nome, cargo, tm}){
 
                       <!-- espaço -->
                       <tr><td colspan="2" style="height:4px;"></td></tr>
+                            `
+                          : ``
+                      }
 
                       <!-- Morada Lisboa atualizada -->
                       <tr>
