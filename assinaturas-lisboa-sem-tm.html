@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assinaturas FYLD — Builder (Lisboa, sem TM)</title>
+<title>Assinaturas FYLD — Builder (Lisboa, sem TM, sem foto)</title>
 <style>
   html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
   .wrap{max-width:1100px;margin:24px auto;padding:20px}
@@ -23,7 +23,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Assinaturas FYLD — Builder (Lisboa, sem TM)</h1>
+  <h1>Assinaturas FYLD — Builder (Lisboa, sem TM, sem foto)</h1>
 
   <div class="grid card">
     <div>
@@ -32,9 +32,6 @@
 
       <label>Cargo</label>
       <input id="cargo" type="text" value="Graphic Designer">
-
-      <label>Imagem (ficheiro no repo ou URL)</label>
-      <input id="foto" type="text" value="headshot-filipa-freire.png">
 
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura (HTML)</button>
@@ -53,8 +50,6 @@
 </div>
 
 <script>
-const ORG  = "FyldAssinaturas";
-const REPO = "email-signatures-fyld";
 const RAW  = `https://www.fyld.pt/signatures/`;
 const LINKS = {
   instagram: "https://www.instagram.com/mainfyld/",
@@ -63,16 +58,13 @@ const LINKS = {
 };
 
 const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
-const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
-function buildSignatureHTML({nome, cargo, foto}){
+function buildSignatureHTML({nome, cargo}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
   const iconIn  = RAW + "icon-linkedin.png";
   const iconIg  = RAW + "icon-instagram.png";
-  const head = resolveImg(foto);
 
   const LOGO_W  = 340;
   const SIDE_W  = 64;
@@ -81,15 +73,10 @@ function buildSignatureHTML({nome, cargo, foto}){
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:${LOGO_W+110+SIDE_W+10}px;max-width:100%;
+         style="width:${LOGO_W+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
     <tr>
-      <td style="width:110px;vertical-align:top;padding:0 6px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="106"
-             style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
-      </td>
-
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
@@ -214,15 +201,13 @@ function buildSignatureHTML({nome, cargo, foto}){
 
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
-const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
 
 function render(){
   try{
     const html = buildSignatureHTML({
       nome:$nome.value,
-      cargo:$cargo.value,
-      foto:$foto.value
+      cargo:$cargo.value
     });
     $prev.innerHTML = html;
   }catch(err){
@@ -230,15 +215,14 @@ function render(){
     console.error(err);
   }
 }
-[$nome,$cargo,$foto].forEach(el => el.addEventListener('input', render));
+[$nome,$cargo].forEach(el => el.addEventListener('input', render));
 render();
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
   try{
     const html = buildSignatureHTML({
       nome:$nome.value,
-      cargo:$cargo.value,
-      foto:$foto.value
+      cargo:$cargo.value
     });
     if (navigator.clipboard && window.ClipboardItem){
       const data = new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})});
@@ -259,8 +243,7 @@ document.getElementById('openBtn').addEventListener('click', () => {
   const qs = new URLSearchParams({
     view:'signature',
     nome:$nome.value,
-    cargo:$cargo.value,
-    foto:$foto.value
+    cargo:$cargo.value
   });
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
@@ -269,8 +252,7 @@ if (new URLSearchParams(location.search).get('view')==='signature'){
   const p = new URLSearchParams(location.search);
   const html = buildSignatureHTML({
     nome:p.get('nome')||'',
-    cargo:p.get('cargo')||'',
-    foto:p.get('foto')||''
+    cargo:p.get('cargo')||''
   });
   document.body.innerHTML = html;
 }
