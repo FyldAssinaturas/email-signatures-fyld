@@ -12,7 +12,18 @@
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   h1{font-size:20px;margin:0 0 12px}
   label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
-  input[type="text"],input[type="tel"]{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px}
+  input[type="text"],input[type="tel"]{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+    color:#000; /* preto por defeito */
+  }
+  /* estado "placeholder" visual (texto cinzento) */
+  input.placeholder{
+    color:#999;
+  }
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
@@ -34,7 +45,7 @@
       <label>Cargo</label>
       <input id="cargo" type="text" value="Cargo">
 
-      <label>TM (se aplicável)</label>
+      <label>TM (com indicativo)</label>
       <input id="tm" type="tel" value="(+351) 934 000 000">
 
       <div class="row" style="margin-top:14px">
@@ -73,7 +84,7 @@ function buildSignatureHTML({nome, cargo, tm}){
   const ISO_W   = 56;
   const LABEL_W = 16;
   const OUTER_W = LOGO_W + SIDE_W + 10;
-  const hasTm   = !!(tm && tm.trim()); /* ← NOVO: verifica se o TM foi preenchido */
+  const hasTm   = !!(tm && tm.trim()); /* TM opcional */
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -217,12 +228,39 @@ const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
 const $prev = document.getElementById('signaturePreview');
 
+/* guardar o valor "default" de cada campo para saber quando é só texto de ajuda */
+[$nome,$cargo,$tm].forEach(el => {
+  el.dataset.default = el.value;
+});
+
+/* devolve o valor "real" (vazio se for só o texto default ou se estiver vazio) */
+function getEffectiveValue(el){
+  const v = el.value || '';
+  const d = el.dataset.default || '';
+  if (!v.trim() || v === d) return '';
+  return v;
+}
+
+/* atualiza a cor dos inputs (cinza quando está no texto default, preto quando preenchido) */
+function updateInputStyles(){
+  [$nome,$cargo,$tm].forEach(el => {
+    const v = el.value || '';
+    const d = el.dataset.default || '';
+    if (!v.trim() || v === d){
+      el.classList.add('placeholder');
+    } else {
+      el.classList.remove('placeholder');
+    }
+  });
+}
+
 function render(){
   try{
+    updateInputStyles();
     $prev.innerHTML = buildSignatureHTML({
-      nome:$nome.value,
-      cargo:$cargo.value,
-      tm:$tm.value
+      nome: getEffectiveValue($nome),
+      cargo: getEffectiveValue($cargo),
+      tm: getEffectiveValue($tm)
     });
   }catch(err){
     $prev.innerHTML = `<div class="error">Erro: ${esc(String(err))}</div>`;
@@ -234,11 +272,12 @@ render();
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
   try{
-    const html = buildSignatureHTML({
-      nome:$nome.value,
-      cargo:$cargo.value,
-      tm:$tm.value
-    });
+    const payload = {
+      nome: getEffectiveValue($nome),
+      cargo: getEffectiveValue($cargo),
+      tm: getEffectiveValue($tm)
+    };
+    const html = buildSignatureHTML(payload);
 
     if (navigator.clipboard && window.ClipboardItem){
       await navigator.clipboard.write([
@@ -257,12 +296,12 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('openBtn').addEventListener('click', () => {
+document.getElementById('openBtn')?.addEventListener('click', () => {
   const qs = new URLSearchParams({
     view:'signature',
-    nome:$nome.value,
-    cargo:$cargo.value,
-    tm:$tm.value
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm)
   });
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
