@@ -18,9 +18,8 @@
     border:1px solid #ddd;
     border-radius:10px;
     font-size:15px;
-    color:#000; /* preto por defeito */
+    color:#000;
   }
-  /* estado "placeholder" visual (texto cinzento) */
   input.placeholder{
     color:#999;
   }
@@ -50,6 +49,7 @@
 
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura</button>
+        <button id="linkBtn" class="secondary">Copiar link da assinatura</button>
       </div>
 
       <p class="tip">FYLD</p>
@@ -84,7 +84,7 @@ function buildSignatureHTML({nome, cargo, tm}){
   const ISO_W   = 56;
   const LABEL_W = 16;
   const OUTER_W = LOGO_W + SIDE_W + 10;
-  const hasTm   = !!(tm && tm.trim()); /* TM opcional */
+  const hasTm   = !!(tm && tm.trim());
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -228,12 +228,10 @@ const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
 const $prev = document.getElementById('signaturePreview');
 
-/* guardar o valor "default" de cada campo para saber quando é só texto de ajuda */
 [$nome,$cargo,$tm].forEach(el => {
   el.dataset.default = el.value;
 });
 
-/* devolve o valor "real" (vazio se for só o texto default ou se estiver vazio) */
 function getEffectiveValue(el){
   const v = el.value || '';
   const d = el.dataset.default || '';
@@ -241,7 +239,6 @@ function getEffectiveValue(el){
   return v;
 }
 
-/* atualiza a cor dos inputs (cinza quando está no texto default, preto quando preenchido) */
 function updateInputStyles(){
   [$nome,$cargo,$tm].forEach(el => {
     const v = el.value || '';
@@ -252,6 +249,16 @@ function updateInputStyles(){
       el.classList.remove('placeholder');
     }
   });
+}
+
+function buildSignatureLink(){
+  const qs = new URLSearchParams({
+    view:'signature',
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm)
+  });
+  return `${location.origin}${location.pathname}?${qs.toString()}`;
 }
 
 function render(){
@@ -286,8 +293,11 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
       alert('Assinatura copiada! ✨');
     } else {
       const ta=document.createElement('textarea');
-      ta.value=html; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy'); ta.remove();
+      ta.value=html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
       alert('Assinatura copiada! ✨');
     }
 
@@ -296,14 +306,25 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('openBtn')?.addEventListener('click', () => {
-  const qs = new URLSearchParams({
-    view:'signature',
-    nome:getEffectiveValue($nome),
-    cargo:getEffectiveValue($cargo),
-    tm:getEffectiveValue($tm)
-  });
-  window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
+document.getElementById('linkBtn').addEventListener('click', async () => {
+  try{
+    const link = buildSignatureLink();
+
+    if (navigator.clipboard){
+      await navigator.clipboard.writeText(link);
+      alert('Link da assinatura copiado! ✨');
+    } else {
+      const ta=document.createElement('textarea');
+      ta.value=link;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      alert('Link da assinatura copiado! ✨');
+    }
+  }catch(err){
+    alert('Erro a copiar o link.');
+  }
 });
 
 if (new URLSearchParams(location.search).get('view')==='signature'){
