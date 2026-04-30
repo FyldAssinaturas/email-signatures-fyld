@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assinaturas FYLD — Builder (sem foto, Lisboa/Porto, 2 TM)</title>
+<title>Assinaturas FYLD</title>
 <style>
   html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
   .wrap{max-width:1100px;margin:24px auto;padding:20px}
@@ -12,46 +12,51 @@
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   h1{font-size:20px;margin:0 0 12px}
   label{display:block;font-size:13px;margin:8px 0 4px;color:#333}
-  input[type="text"],input[type="tel"],select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:15px;box-sizing:border-box}
+  input[type="text"],input[type="tel"],select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+    color:#000;
+    background:#fff;
+  }
+  input.placeholder{color:#999;}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto;min-height:140px}
   .tip{font-size:12px;color:#666;margin-top:8px}
-  .error{background:#fff3f3;border:1px solid #e99;border-radius:10px;padding:10px;color:#900;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono","Courier New", monospace}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <h1>Assinaturas FYLD — Builder (sem foto, Lisboa/Porto, 2 TM)</h1>
+  <h1>Assinaturas FYLD</h1>
 
   <div class="grid card">
     <div>
       <label>Nome</label>
-      <input id="nome" type="text" value="Nome Apelido">
+      <input id="nome" type="text" value="Nome">
 
       <label>Cargo</label>
-      <input id="cargo" type="text" value="JOB TITLE">
+      <input id="cargo" type="text" value="Cargo">
 
-      <label>TM (principal, com indicativo)</label>
-      <input id="tm" type="tel" value="(+351) 912 345 678">
-
-      <label>TM (opcional)</label>
-      <input id="tm2" type="tel" value="">
+      <label>TM (com indicativo)</label>
+      <input id="tm" type="tel" value="(+351) 934 000 000">
 
       <label>Morada</label>
-      <select id="morada">
-        <option value="lisboa" selected>Lisboa — Rua Actor Taborda</option>
-        <option value="porto">Porto — Rua de Augusto Rosa</option>
+      <select id="office">
+        <option value="lisboa">Lisboa</option>
+        <option value="porto">Porto</option>
       </select>
 
       <div class="row" style="margin-top:14px">
-        <button id="copyBtn">Copiar assinatura (HTML)</button>
-        <button class="secondary" id="openBtn">Abrir só a assinatura</button>
+        <button id="copyBtn">Copiar assinatura</button>
+        <button id="linkBtn" class="secondary">Copiar link da assinatura</button>
       </div>
 
-      <p class="tip">FYLD — versão sem foto</p>
+      <p class="tip">FYLD</p>
     </div>
 
     <div>
@@ -70,19 +75,19 @@ const LINKS = {
 
 const ADDRESSES = {
   lisboa: {
-    line1: "Rua Actor Taborda, 27, 3º Piso",
-    line2: "1000-007 Lisboa"
+    line1: "Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27,&nbsp;3º&nbsp;Piso",
+    line2: "1000-007&nbsp;Lisboa"
   },
   porto: {
-    line1: "Rua de Augusto Rosa 79",
-    line2: "4000-098 Porto"
+    line1: "Rua&nbsp;de&nbsp;Augusto&nbsp;Rosa&nbsp;79",
+    line2: "4000-098&nbsp;Porto"
   }
 };
 
 const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
-function buildSignatureHTML({nome, cargo, tm, tm2, morada}){
+function buildSignatureHTML({nome, cargo, tm, office}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
@@ -93,190 +98,137 @@ function buildSignatureHTML({nome, cargo, tm, tm2, morada}){
   const SIDE_W  = 64;
   const ISO_W   = 56;
   const LABEL_W = 16;
-  const hasTm2 = !!(tm2 && tm2.trim());
+  const OUTER_W = LOGO_W + SIDE_W + 10;
+  const hasTm   = !!(tm && tm.trim());
+  const address = ADDRESSES[office] || ADDRESSES.lisboa;
 
-  const address = ADDRESSES[morada] || ADDRESSES.lisboa;
-
-  const inner = `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:${LOGO_W+SIDE_W+10}px;max-width:100%;
-                font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
-                font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
-
+  return `
+  <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-      <td style="vertical-align:top;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-               style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
-
-          <!-- LOGO + ISO -->
+      <td>
+        <table style="font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;font-size:14px;line-height:1.2;">
+          
           <tr>
-            <td style="vertical-align:middle;width:${LOGO_W}px;">
-              <img src="${logo}" alt="FYLD" width="${LOGO_W}"
-                   style="display:block;max-width:100%;height:auto;border:0;margin:0;">
+            <td>
+              <img src="${logo}" width="${LOGO_W}">
             </td>
-            <td style="vertical-align:middle;padding-left:14px;width:${SIDE_W}px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}"
-                   style="display:block;height:auto;border:0;margin:0;">
+            <td style="padding-left:14px;">
+              <img src="${iso}" width="${ISO_W}">
             </td>
           </tr>
 
-          <!-- NOME + DETALHES -->
           <tr>
-            <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-                     style="width:${LOGO_W}px;border-collapse:collapse;">
-
-                <tr>
-                  <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">
-                      ${esc(nome)}
-                    </div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">
-                      ${esc(cargo)}
-                    </div>
-                  </td>
-
-                  <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-                           style="font-size:10px;line-height:14px;border-collapse:collapse;">
-
-                      <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
-                        <td style="white-space:nowrap;">${NB(esc(tm))}</td>
-                      </tr>
-
-                      ${
-                        hasTm2
-                          ? `<tr>
-                               <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
-                               <td style="white-space:nowrap;">${NB(esc(tm2))}</td>
-                             </tr>`
-                          : ``
-                      }
-
-                      <tr><td colspan="2" style="height:4px;"></td></tr>
-
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${NB(esc(address.line1))}</td>
-                      </tr>
-
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${NB(esc(address.line2))}</td>
-                      </tr>
-
-                      <tr><td colspan="2" style="height:4px;"></td></tr>
-
-                      <tr>
-                        <td style="font-weight:700;">T</td>
-                        <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
-                      </tr>
-
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>
-                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">
-                            fyld.pt
-                          </a>
-                        </td>
-                      </tr>
-
-                    </table>
-                  </td>
-                </tr>
-
-              </table>
+            <td style="padding-top:12px;">
+              <div style="font-size:22px;font-weight:800;white-space:nowrap;">
+                ${esc(nome)}
+              </div>
+              <div style="font-size:11px;white-space:nowrap;">
+                ${esc(cargo).toUpperCase()}
+              </div>
             </td>
 
-            <!-- Icons -->
-            <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="padding-bottom:4px;">
-                  <a href="${LINKS.website}">
-                    <img src="${iconWeb}" width="22" height="22">
-                  </a>
-                </td></tr>
+            <td style="padding-left:20px;font-size:10px;">
 
-                <tr><td style="padding-bottom:4px;">
-                  <a href="${LINKS.linkedin}">
-                    <img src="${iconIn}" width="22" height="22">
-                  </a>
-                </td></tr>
+              ${
+                hasTm
+                ? `<div><strong>TM</strong> ${NB(esc(tm))}</div>`
+                : ``
+              }
 
-                <tr><td>
-                  <a href="${LINKS.instagram}">
-                    <img src="${iconIg}" width="22" height="22">
-                  </a>
-                </td></tr>
-              </table>
+              <div>${address.line1}</div>
+              <div>${address.line2}</div>
+
+              <div style="margin-top:4px;">
+                <strong>T</strong> (+351)&nbsp;213&nbsp;520&nbsp;895
+              </div>
+
+              <div>
+                <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">
+                  fyld.pt
+                </a>
+              </div>
+
             </td>
           </tr>
 
         </table>
       </td>
     </tr>
-
   </table>`;
-
-  return `<table cellpadding="0" cellspacing="0" border="0"><tr><td>${inner}</td></tr></table>`;
 }
 
 const $nome = document.getElementById('nome');
 const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
-const $tm2  = document.getElementById('tm2');
-const $morada = document.getElementById('morada');
+const $office = document.getElementById('office');
 const $prev = document.getElementById('signaturePreview');
 
-function render(){
-  $prev.innerHTML = buildSignatureHTML({
-    nome:$nome.value,
-    cargo:$cargo.value,
-    tm:$tm.value,
-    tm2:$tm2.value,
-    morada:$morada.value
+[$nome,$cargo,$tm].forEach(el => el.dataset.default = el.value);
+
+function getEffectiveValue(el){
+  const v = el.value || '';
+  const d = el.dataset.default || '';
+  return (!v.trim() || v===d) ? '' : v;
+}
+
+function updateInputStyles(){
+  [$nome,$cargo,$tm].forEach(el=>{
+    const v=el.value||'', d=el.dataset.default||'';
+    (!v.trim()||v===d) ? el.classList.add('placeholder') : el.classList.remove('placeholder');
   });
 }
 
-[$nome,$cargo,$tm,$tm2,$morada].forEach(el => el.addEventListener('input', render));
+function buildSignatureLink(){
+  const qs=new URLSearchParams({
+    view:'signature',
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm),
+    office:$office.value
+  });
+  return `${location.origin}${location.pathname}?${qs}`;
+}
+
+function render(){
+  updateInputStyles();
+  $prev.innerHTML = buildSignatureHTML({
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm),
+    office:$office.value
+  });
+}
+
+[$nome,$cargo,$tm,$office].forEach(el=>el.addEventListener('input',render));
+$office.addEventListener('change',render);
 render();
 
-document.getElementById('copyBtn').addEventListener('click', () => {
-  const html = buildSignatureHTML({
-    nome:$nome.value,
-    cargo:$cargo.value,
-    tm:$tm.value,
-    tm2:$tm2.value,
-    morada:$morada.value
+document.getElementById('copyBtn').onclick=async()=>{
+  const html=buildSignatureHTML({
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm),
+    office:$office.value
   });
-
-  const ta=document.createElement('textarea');
-  ta.value=html; document.body.appendChild(ta);
-  ta.select(); document.execCommand('copy'); ta.remove();
+  await navigator.clipboard.write([
+    new ClipboardItem({"text/html":new Blob([html],{type:"text/html"})})
+  ]);
   alert('Assinatura copiada! ✨');
-});
+};
 
-document.getElementById('openBtn').addEventListener('click', () => {
-  const qs = new URLSearchParams({
-    view:'signature',
-    nome:$nome.value,
-    cargo:$cargo.value,
-    tm:$tm.value,
-    tm2:$tm2.value,
-    morada:$morada.value
-  });
-  window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
-});
+document.getElementById('linkBtn').onclick=async()=>{
+  const link=buildSignatureLink();
+  await navigator.clipboard.writeText(link);
+  alert('Link copiado! ✨');
+};
 
-if (new URLSearchParams(location.search).get('view')==='signature'){
-  const p = new URLSearchParams(location.search);
-  document.body.innerHTML = buildSignatureHTML({
+if(new URLSearchParams(location.search).get('view')==='signature'){
+  const p=new URLSearchParams(location.search);
+  document.body.innerHTML=buildSignatureHTML({
     nome:p.get('nome')||'',
     cargo:p.get('cargo')||'',
     tm:p.get('tm')||'',
-    tm2:p.get('tm2')||'',
-    morada:p.get('morada')||'lisboa'
+    office:p.get('office')||'lisboa'
   });
 }
 </script>
