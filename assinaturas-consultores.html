@@ -21,9 +21,7 @@
     color:#000;
     background:#fff;
   }
-  input.placeholder{
-    color:#999;
-  }
+  input.placeholder{color:#999}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:#000;color:#fff}
   button.secondary{background:#111;opacity:.85}
@@ -76,17 +74,6 @@ const LINKS = {
   website:   "https://www.fyld.pt/"
 };
 
-const ADDRESSES = {
-  lisboa: {
-    line1: "Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27,&nbsp;3º&nbsp;Piso",
-    line2: "1000-007&nbsp;Lisboa"
-  },
-  porto: {
-    line1: "Rua&nbsp;de&nbsp;Augusto&nbsp;Rosa&nbsp;79",
-    line2: "4000-098&nbsp;Porto"
-  }
-};
-
 const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
@@ -103,7 +90,14 @@ function buildSignatureHTML({nome, cargo, tm, office}){
   const LABEL_W = 16;
   const OUTER_W = LOGO_W + SIDE_W + 10;
   const hasTm   = !!(tm && tm.trim());
-  const address = ADDRESSES[office] || ADDRESSES.lisboa;
+
+  const addressLine1 = office === 'porto'
+    ? 'Rua&nbsp;de&nbsp;Augusto&nbsp;Rosa&nbsp;79'
+    : 'Rua&nbsp;Actor&nbsp;Taborda,&nbsp;27,&nbsp;3º&nbsp;Piso';
+
+  const addressLine2 = office === 'porto'
+    ? '4000-098&nbsp;Porto'
+    : '1000-007&nbsp;Lisboa';
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -151,6 +145,7 @@ function buildSignatureHTML({nome, cargo, tm, office}){
                     <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                            style="font-size:10px;line-height:14px;border-collapse:collapse;">
 
+                      <!-- TM único (opcional) -->
                       ${
                         hasTm
                           ? `
@@ -159,28 +154,33 @@ function buildSignatureHTML({nome, cargo, tm, office}){
                         <td style="white-space:nowrap;">${NB(esc(tm))}</td>
                       </tr>
 
+                      <!-- espaço -->
                       <tr><td colspan="2" style="height:4px;"></td></tr>
                             `
                           : ``
                       }
 
+                      <!-- Morada -->
                       <tr>
                         <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${address.line1}</td>
+                        <td style="white-space:nowrap;">${addressLine1}</td>
                       </tr>
 
                       <tr>
                         <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${address.line2}</td>
+                        <td style="white-space:nowrap;">${addressLine2}</td>
                       </tr>
 
+                      <!-- espaço -->
                       <tr><td colspan="2" style="height:4px;"></td></tr>
 
+                      <!-- Telefone fixo -->
                       <tr>
                         <td style="font-weight:700;">T</td>
                         <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
                       </tr>
 
+                      <!-- fyld.pt -->
                       <tr>
                         <td>&nbsp;</td>
                         <td>
@@ -236,7 +236,124 @@ function buildSignatureHTML({nome, cargo, tm, office}){
   </table>`;
 }
 
-// resto do JS igual (não alterado)
+const $nome = document.getElementById('nome');
+const $cargo= document.getElementById('cargo');
+const $tm   = document.getElementById('tm');
+const $office = document.getElementById('office');
+const $prev = document.getElementById('signaturePreview');
+
+[$nome,$cargo,$tm].forEach(el => {
+  el.dataset.default = el.value;
+});
+
+function getEffectiveValue(el){
+  const v = el.value || '';
+  const d = el.dataset.default || '';
+  if (!v.trim() || v === d) return '';
+  return v;
+}
+
+function updateInputStyles(){
+  [$nome,$cargo,$tm].forEach(el => {
+    const v = el.value || '';
+    const d = el.dataset.default || '';
+    if (!v.trim() || v === d){
+      el.classList.add('placeholder');
+    } else {
+      el.classList.remove('placeholder');
+    }
+  });
+}
+
+function buildSignatureLink(){
+  const qs = new URLSearchParams({
+    view:'signature',
+    nome:getEffectiveValue($nome),
+    cargo:getEffectiveValue($cargo),
+    tm:getEffectiveValue($tm),
+    office:$office.value
+  });
+  return `${location.origin}${location.pathname}?${qs.toString()}`;
+}
+
+function render(){
+  try{
+    updateInputStyles();
+    $prev.innerHTML = buildSignatureHTML({
+      nome: getEffectiveValue($nome),
+      cargo: getEffectiveValue($cargo),
+      tm: getEffectiveValue($tm),
+      office: $office.value
+    });
+  }catch(err){
+    $prev.innerHTML = `<div class="error">Erro: ${esc(String(err))}</div>`;
+  }
+}
+
+[$nome,$cargo,$tm,$office].forEach(el => el.addEventListener('input', render));
+$office.addEventListener('change', render);
+render();
+
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  try{
+    const payload = {
+      nome: getEffectiveValue($nome),
+      cargo: getEffectiveValue($cargo),
+      tm: getEffectiveValue($tm),
+      office: $office.value
+    };
+    const html = buildSignatureHTML(payload);
+
+    if (navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([
+        new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})})
+      ]);
+      alert('Assinatura copiada! ✨');
+    } else {
+      const ta=document.createElement('textarea');
+      ta.value=html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      alert('Assinatura copiada! ✨');
+    }
+
+  }catch(err){
+    alert('Erro a copiar.');
+  }
+});
+
+document.getElementById('linkBtn').addEventListener('click', async () => {
+  try{
+    const link = buildSignatureLink();
+
+    if (navigator.clipboard){
+      await navigator.clipboard.writeText(link);
+      alert('Link da assinatura copiado! ✨');
+    } else {
+      const ta=document.createElement('textarea');
+      ta.value=link;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      alert('Link da assinatura copiado! ✨');
+    }
+  }catch(err){
+    alert('Erro a copiar o link.');
+  }
+});
+
+if (new URLSearchParams(location.search).get('view')==='signature'){
+  const p = new URLSearchParams(location.search);
+  document.body.innerHTML = buildSignatureHTML({
+    nome:p.get('nome')||'',
+    cargo:p.get('cargo')||'',
+    tm:p.get('tm')||'',
+    office:p.get('office')||'lisboa'
+  });
+}
 </script>
 </body>
 </html>
