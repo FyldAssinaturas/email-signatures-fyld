@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assinaturas FYLD — Builder (Lisboa/Porto, 2 TM)</title>
+<title>Assinaturas FYLD — Builder (sem foto, Lisboa/Porto, 2 TM)</title>
 <style>
   html,body{margin:0;background:#f6f6f6;color:#000;font-family:Mogno,Arial,Helvetica,sans-serif}
   .wrap{max-width:1100px;margin:24px auto;padding:20px}
@@ -24,7 +24,7 @@
 
 <body>
 <div class="wrap">
-  <h1>Assinaturas FYLD — Builder (Lisboa/Porto, 2 TM)</h1>
+  <h1>Assinaturas FYLD — Builder (sem foto, Lisboa/Porto, 2 TM)</h1>
 
   <div class="grid card">
     <div>
@@ -46,15 +46,12 @@
         <option value="porto">Porto — Rua de Augusto Rosa</option>
       </select>
 
-      <label>Imagem (ficheiro no repo ou URL)</label>
-      <input id="foto" type="text" value="headshot-filipa-freire.png">
-
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura (HTML)</button>
         <button class="secondary" id="openBtn">Abrir só a assinatura</button>
       </div>
 
-      <p class="tip">FYLD — Lisboa/Porto + 2 TM opcionais</p>
+      <p class="tip">FYLD — versão sem foto</p>
     </div>
 
     <div>
@@ -64,8 +61,6 @@
 </div>
 
 <script>
-const ORG  = "FyldAssinaturas";
-const REPO = "email-signatures-fyld";
 const RAW  = `https://www.fyld.pt/signatures/`;
 const LINKS = {
   instagram: "https://www.instagram.com/mainfyld/",
@@ -85,16 +80,14 @@ const ADDRESSES = {
 };
 
 const esc = s => (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const resolveImg = v => !v ? "" : (/^https?:\/\//i.test(v) ? v.trim() : (RAW + v.trim()));
 const NB = s => (s||"").replace(/\s/g,'&nbsp;');
 
-function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
+function buildSignatureHTML({nome, cargo, tm, tm2, morada}){
   const logo = RAW + "fyld-logo.png";
   const iso  = RAW + "certificacao-iso.png";
   const iconWeb = RAW + "icon-website.png";
   const iconIn  = RAW + "icon-linkedin.png";
   const iconIg  = RAW + "icon-instagram.png";
-  const head = resolveImg(foto);
 
   const LOGO_W  = 340;
   const SIDE_W  = 64;
@@ -106,20 +99,16 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
 
   const inner = `
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-         style="width:${LOGO_W+110+SIDE_W+10}px;max-width:100%;
+         style="width:${LOGO_W+SIDE_W+10}px;max-width:100%;
                 font-family:Mogno,Arial,Helvetica,sans-serif;color:#000;
                 font-size:14px;line-height:1.2;margin:0;border-collapse:collapse;">
 
     <tr>
-      <td style="width:110px;vertical-align:top;padding:0 6px 0 0;">
-        ${head ? `<img src="${head}" alt="${esc(nome)}" width="106"
-          style="display:block;width:106px;height:auto;border-radius:999px;border:0;margin:0;">` : ``}
-      </td>
-
       <td style="vertical-align:top;">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
 
+          <!-- LOGO + ISO -->
           <tr>
             <td style="vertical-align:middle;width:${LOGO_W}px;">
               <img src="${logo}" alt="FYLD" width="${LOGO_W}"
@@ -131,6 +120,7 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
             </td>
           </tr>
 
+          <!-- NOME + DETALHES -->
           <tr>
             <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0"
@@ -138,8 +128,7 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
 
                 <tr>
                   <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;
-                                white-space:nowrap;max-width:none;">
+                    <div style="font-size:22px;line-height:26px;font-weight:800;white-space:nowrap;">
                       ${esc(nome)}
                     </div>
                     <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">
@@ -187,8 +176,7 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
                       <tr>
                         <td>&nbsp;</td>
                         <td>
-                          <a href="${LINKS.website}"
-                             style="color:#000;text-decoration:none;font-weight:700;">
+                          <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">
                             fyld.pt
                           </a>
                         </td>
@@ -201,27 +189,26 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
               </table>
             </td>
 
+            <!-- Icons -->
             <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-
                 <tr><td style="padding-bottom:4px;">
                   <a href="${LINKS.website}">
-                    <img src="${iconWeb}" width="22" height="22" style="display:block;">
+                    <img src="${iconWeb}" width="22" height="22">
                   </a>
                 </td></tr>
 
                 <tr><td style="padding-bottom:4px;">
                   <a href="${LINKS.linkedin}">
-                    <img src="${iconIn}" width="22" height="22" style="display:block;">
+                    <img src="${iconIn}" width="22" height="22">
                   </a>
                 </td></tr>
 
                 <tr><td>
                   <a href="${LINKS.instagram}">
-                    <img src="${iconIg}" width="22" height="22" style="display:block;">
+                    <img src="${iconIg}" width="22" height="22">
                   </a>
                 </td></tr>
-
               </table>
             </td>
           </tr>
@@ -232,10 +219,7 @@ function buildSignatureHTML({nome, cargo, tm, tm2, foto, morada}){
 
   </table>`;
 
-  return `
-  <table cellpadding="0" cellspacing="0" border="0">
-    <tr><td>${inner}</td></tr>
-  </table>`;
+  return `<table cellpadding="0" cellspacing="0" border="0"><tr><td>${inner}</td></tr></table>`;
 }
 
 const $nome = document.getElementById('nome');
@@ -243,53 +227,34 @@ const $cargo= document.getElementById('cargo');
 const $tm   = document.getElementById('tm');
 const $tm2  = document.getElementById('tm2');
 const $morada = document.getElementById('morada');
-const $foto = document.getElementById('foto');
 const $prev = document.getElementById('signaturePreview');
 
 function render(){
-  try{
-    $prev.innerHTML = buildSignatureHTML({
-      nome:$nome.value,
-      cargo:$cargo.value,
-      tm:$tm.value,
-      tm2:$tm2.value,
-      morada:$morada.value,
-      foto:$foto.value
-    });
-  }catch(err){
-    $prev.innerHTML = `<div class="error">Erro: ${esc(String(err))}</div>`;
-  }
+  $prev.innerHTML = buildSignatureHTML({
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    tm2:$tm2.value,
+    morada:$morada.value
+  });
 }
 
-[$nome,$cargo,$tm,$tm2,$morada,$foto].forEach(el => el.addEventListener('input', render));
+[$nome,$cargo,$tm,$tm2,$morada].forEach(el => el.addEventListener('input', render));
 render();
 
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  try{
-    const html = buildSignatureHTML({
-      nome:$nome.value,
-      cargo:$cargo.value,
-      tm:$tm.value,
-      tm2:$tm2.value,
-      morada:$morada.value,
-      foto:$foto.value
-    });
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const html = buildSignatureHTML({
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    tm2:$tm2.value,
+    morada:$morada.value
+  });
 
-    if (navigator.clipboard && window.ClipboardItem){
-      await navigator.clipboard.write([
-        new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})})
-      ]);
-      alert('Assinatura copiada! ✨');
-    } else {
-      const ta=document.createElement('textarea');
-      ta.value=html; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy'); ta.remove();
-      alert('Assinatura copiada! ✨');
-    }
-
-  }catch(err){
-    alert('Erro a copiar.');
-  }
+  const ta=document.createElement('textarea');
+  ta.value=html; document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy'); ta.remove();
+  alert('Assinatura copiada! ✨');
 });
 
 document.getElementById('openBtn').addEventListener('click', () => {
@@ -299,8 +264,7 @@ document.getElementById('openBtn').addEventListener('click', () => {
     cargo:$cargo.value,
     tm:$tm.value,
     tm2:$tm2.value,
-    morada:$morada.value,
-    foto:$foto.value
+    morada:$morada.value
   });
   window.open(`${location.origin}${location.pathname}?${qs.toString()}`, '_blank');
 });
@@ -312,8 +276,7 @@ if (new URLSearchParams(location.search).get('view')==='signature'){
     cargo:p.get('cargo')||'',
     tm:p.get('tm')||'',
     tm2:p.get('tm2')||'',
-    morada:p.get('morada')||'lisboa',
-    foto:p.get('foto')||''
+    morada:p.get('morada')||'lisboa'
   });
 }
 </script>
