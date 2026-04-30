@@ -27,7 +27,6 @@
   button.secondary{background:#111;opacity:.85}
   .sig-outer{background:#fff;padding:16px;border:1px dashed #ddd;border-radius:12px;overflow:auto;min-height:140px}
   .tip{font-size:12px;color:#666;margin-top:8px}
-  .error{background:#fff3f3;border:1px solid #e99;border-radius:10px;padding:10px;color:#900;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono","Courier New", monospace}
 </style>
 </head>
 
@@ -54,7 +53,7 @@
 
       <div class="row" style="margin-top:14px">
         <button id="copyBtn">Copiar assinatura</button>
-        <button id="linkBtn" class="secondary">Copiar link da assinatura</button>
+        <button id="openBtn" class="secondary">Abrir só a assinatura</button>
       </div>
 
       <p class="tip">FYLD</p>
@@ -110,130 +109,51 @@ function buildSignatureHTML({nome, cargo, tm, office}){
         <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                style="width:${LOGO_W+SIDE_W}px;border-collapse:collapse;">
 
-          <!-- LOGO + ISO -->
           <tr>
             <td style="vertical-align:middle;width:${LOGO_W}px;">
-              <img src="${logo}" alt="FYLD" width="${LOGO_W}"
-                   style="display:block;max-width:100%;height:auto;border:0;margin:0;">
+              <img src="${logo}" width="${LOGO_W}">
             </td>
-            <td style="vertical-align:middle;padding-left:14px;width:${SIDE_W}px;">
-              <img src="${iso}" alt="ISO/IEC 27001 Certified" width="${ISO_W}"
-                   style="display:block;height:auto;border:0;margin:0;">
+            <td style="vertical-align:middle;padding-left:14px;">
+              <img src="${iso}" width="${ISO_W}">
             </td>
           </tr>
 
-          <!-- NOME + DETALHES -->
           <tr>
-            <td style="vertical-align:top;padding-top:12px;width:${LOGO_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-                     style="width:${LOGO_W}px;border-collapse:collapse;">
-
-                <tr>
-                  <!-- Nome -->
-                  <td style="vertical-align:top;">
-                    <div style="font-size:22px;line-height:26px;font-weight:800;
-                                white-space:nowrap;max-width:none;">
-                      ${esc(nome)}
-                    </div>
-                    <div style="font-size:11px;line-height:15px;margin-top:2px;white-space:nowrap;">
-                      ${esc(cargo).toUpperCase()}
-                    </div>
-                  </td>
-
-                  <!-- Contactos -->
-                  <td style="vertical-align:top;padding-left:10px;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
-                           style="font-size:10px;line-height:14px;border-collapse:collapse;">
-
-                      <!-- TM único (opcional) -->
-                      ${
-                        hasTm
-                          ? `
-                      <tr>
-                        <td style="width:${LABEL_W}px;font-weight:700;padding-right:4px;">TM</td>
-                        <td style="white-space:nowrap;">${NB(esc(tm))}</td>
-                      </tr>
-
-                      <!-- espaço -->
-                      <tr><td colspan="2" style="height:4px;"></td></tr>
-                            `
-                          : ``
-                      }
-
-                      <!-- Morada -->
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${addressLine1}</td>
-                      </tr>
-
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td style="white-space:nowrap;">${addressLine2}</td>
-                      </tr>
-
-                      <!-- espaço -->
-                      <tr><td colspan="2" style="height:4px;"></td></tr>
-
-                      <!-- Telefone fixo -->
-                      <tr>
-                        <td style="font-weight:700;">T</td>
-                        <td style="white-space:nowrap;">(+351)&nbsp;213&nbsp;520&nbsp;895</td>
-                      </tr>
-
-                      <!-- fyld.pt -->
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>
-                          <a href="${LINKS.website}"
-                             style="color:#000;text-decoration:none;font-weight:700;">
-                            fyld.pt
-                          </a>
-                        </td>
-                      </tr>
-
-                    </table>
-                  </td>
-                </tr>
-
-              </table>
+            <td style="padding-top:12px;">
+              <div style="font-size:22px;font-weight:800;">
+                ${esc(nome)}
+              </div>
+              <div style="font-size:11px;">
+                ${esc(cargo).toUpperCase()}
+              </div>
             </td>
 
-            <!-- Icons -->
-            <td style="vertical-align:top;padding-top:4px;padding-left:18px;width:${SIDE_W}px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <td style="padding-left:10px;font-size:10px;">
 
-                <tr><td style="padding-bottom:4px;">
-                  <a href="${LINKS.website}">
-                    <img src="${iconWeb}" width="22" height="22" style="display:block;">
-                  </a>
-                </td></tr>
+              ${hasTm ? `<div><strong>TM</strong> ${NB(esc(tm))}</div>` : ``}
 
-                <tr><td style="padding-bottom:4px;">
-                  <a href="${LINKS.linkedin}">
-                    <img src="${iconIn}" width="22" height="22" style="display:block;">
-                  </a>
-                </td></tr>
+              <div>${addressLine1}</div>
+              <div>${addressLine2}</div>
 
-                <tr><td>
-                  <a href="${LINKS.instagram}">
-                    <img src="${iconIg}" width="22" height="22" style="display:block;">
-                  </a>
-                </td></tr>
+              <div style="margin-top:4px;">
+                <strong>T</strong> (+351)&nbsp;213&nbsp;520&nbsp;895
+              </div>
 
-              </table>
+              <div>
+                <a href="${LINKS.website}" style="color:#000;text-decoration:none;font-weight:700;">
+                  fyld.pt
+                </a>
+              </div>
+
             </td>
           </tr>
 
         </table>
       </td>
     </tr>
-
   </table>`;
 
-  return `
-  <table cellpadding="0" cellspacing="0" border="0">
-    <tr><td>${inner}</td></tr>
-  </table>`;
+  return `<table><tr><td>${inner}</td></tr></table>`;
 }
 
 const $nome = document.getElementById('nome');
@@ -242,116 +162,49 @@ const $tm   = document.getElementById('tm');
 const $office = document.getElementById('office');
 const $prev = document.getElementById('signaturePreview');
 
-[$nome,$cargo,$tm].forEach(el => {
-  el.dataset.default = el.value;
-});
-
-function getEffectiveValue(el){
-  const v = el.value || '';
-  const d = el.dataset.default || '';
-  if (!v.trim() || v === d) return '';
-  return v;
-}
-
-function updateInputStyles(){
-  [$nome,$cargo,$tm].forEach(el => {
-    const v = el.value || '';
-    const d = el.dataset.default || '';
-    if (!v.trim() || v === d){
-      el.classList.add('placeholder');
-    } else {
-      el.classList.remove('placeholder');
-    }
-  });
-}
-
-function buildSignatureLink(){
-  const qs = new URLSearchParams({
-    view:'signature',
-    nome:getEffectiveValue($nome),
-    cargo:getEffectiveValue($cargo),
-    tm:getEffectiveValue($tm),
+function render(){
+  $prev.innerHTML = buildSignatureHTML({
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
     office:$office.value
   });
-  return `${location.origin}${location.pathname}?${qs.toString()}`;
 }
 
-function render(){
-  try{
-    updateInputStyles();
-    $prev.innerHTML = buildSignatureHTML({
-      nome: getEffectiveValue($nome),
-      cargo: getEffectiveValue($cargo),
-      tm: getEffectiveValue($tm),
-      office: $office.value
-    });
-  }catch(err){
-    $prev.innerHTML = `<div class="error">Erro: ${esc(String(err))}</div>`;
-  }
-}
-
-[$nome,$cargo,$tm,$office].forEach(el => el.addEventListener('input', render));
-$office.addEventListener('change', render);
+[$nome,$cargo,$tm,$office].forEach(el=>el.addEventListener('input',render));
 render();
 
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  try{
-    const payload = {
-      nome: getEffectiveValue($nome),
-      cargo: getEffectiveValue($cargo),
-      tm: getEffectiveValue($tm),
-      office: $office.value
-    };
-    const html = buildSignatureHTML(payload);
+document.getElementById('copyBtn').onclick = async () => {
+  const html = buildSignatureHTML({
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    office:$office.value
+  });
+  await navigator.clipboard.write([
+    new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})})
+  ]);
+  alert('Assinatura copiada! ✨');
+};
 
-    if (navigator.clipboard && window.ClipboardItem){
-      await navigator.clipboard.write([
-        new ClipboardItem({"text/html": new Blob([html], {type:"text/html"})})
-      ]);
-      alert('Assinatura copiada! ✨');
-    } else {
-      const ta=document.createElement('textarea');
-      ta.value=html;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-      alert('Assinatura copiada! ✨');
-    }
-
-  }catch(err){
-    alert('Erro a copiar.');
-  }
-});
-
-document.getElementById('linkBtn').addEventListener('click', async () => {
-  try{
-    const link = buildSignatureLink();
-
-    if (navigator.clipboard){
-      await navigator.clipboard.writeText(link);
-      alert('Link da assinatura copiado! ✨');
-    } else {
-      const ta=document.createElement('textarea');
-      ta.value=link;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-      alert('Link da assinatura copiado! ✨');
-    }
-  }catch(err){
-    alert('Erro a copiar o link.');
-  }
-});
+document.getElementById('openBtn').onclick = () => {
+  const qs = new URLSearchParams({
+    view:'signature',
+    nome:$nome.value,
+    cargo:$cargo.value,
+    tm:$tm.value,
+    office:$office.value
+  });
+  window.open(`${location.origin}${location.pathname}?${qs}`, '_blank');
+};
 
 if (new URLSearchParams(location.search).get('view')==='signature'){
   const p = new URLSearchParams(location.search);
   document.body.innerHTML = buildSignatureHTML({
-    nome:p.get('nome')||'',
-    cargo:p.get('cargo')||'',
-    tm:p.get('tm')||'',
-    office:p.get('office')||'lisboa'
+    nome:p.get('nome'),
+    cargo:p.get('cargo'),
+    tm:p.get('tm'),
+    office:p.get('office')
   });
 }
 </script>
